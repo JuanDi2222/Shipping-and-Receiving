@@ -24,13 +24,13 @@ export default function Page() {
   return (
     <main>
       <div className="grid lg:grid-cols-2 gap-8 mt-16 m-28" >
-        <div className="flex flex-col items-start justify-center rounded border border-gray-200 w-full">
+        <div>
           <AreaChartHome />
         </div>
-        <div className="flex flex-col items-start justify-center rounded border border-gray-200 w-full">
+        <div >
           <BarChartHome />
         </div>
-        <div className="flex flex-col items-start justify-center rounded border border-gray-200 w-full">
+        <div>
           <DonutChartHome />
         </div>
       </div>
