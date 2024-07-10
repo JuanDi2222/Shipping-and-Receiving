@@ -29,7 +29,7 @@ const formSchema = z.object({
   fedexground: z.boolean().default(false).optional(),
   line: z.string().min(1).max(100),
   plates: z.string().min(1).max(10),
-  seal: z.coerce.number().min(1),
+  seal: z.coerce.number(),
   manifest: z.string().optional(),
   bulks: z.coerce.number().min(1),
   description: z.string().min(1).max(100),
@@ -564,8 +564,4 @@ export function ProfileForm() {
       </form>
     </Form>
   );
-}
-
-export function onSubmit() {
-  console.log("hola");
 }

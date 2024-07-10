@@ -1,7 +1,12 @@
+import { LoginForm } from "~/app/ui/login/loginForm";
+
 export default function Page() {
-    return (
-        <div>
-            <h1>Login</h1>
-        </div>
-    );
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div>
+
+        <LoginForm />
+      </div>
+    </div>
+  );
 }
