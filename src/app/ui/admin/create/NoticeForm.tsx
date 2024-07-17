@@ -16,6 +16,8 @@ import {
 import { Input } from "~/components/ui/input";
 import { Checkbox } from "~/components/ui/checkbox";
 
+import { useState } from "react";
+
 const formSchema = z.object({
   other: z.string().optional(),
   epdc: z.boolean().default(false).optional(),
@@ -35,20 +37,77 @@ const formSchema = z.object({
   description: z.string().min(1).max(100),
   operator: z.string().min(1).max(100),
   creator: z.string().min(1).max(100),
-  bulksfedex: z.coerce.number().max(100).optional(),
-  bulksfdxfreight: z.coerce.number().max(100).optional(),
-  bulksfdxground: z.coerce.number().max(100).optional(),
-  bulksdhl: z.coerce.number().max(100).optional(),
-  bulksups: z.coerce.number().max(100).optional(),
+  bulksfedex: z.coerce.number().optional(),
+  bulksfdxfreight: z.coerce.number().optional(),
+  bulksfdxground: z.coerce.number().optional(),
+  bulksdhl: z.coerce.number().optional(),
+  bulksups: z.coerce.number().optional(),
   etdcdock: z.string().max(100).optional(),
   bulksetdc: z.string().max(100).optional(),
   epdcdock: z.string().max(100).optional(),
   bulksepdc: z.string().max(100).optional(),
   otherdock: z.string().max(100).optional(),
   bulksother: z.string().max(100).optional(),
+  pediment: z.coerce.number().optional(),
+  pedimentCode: z.string().max(3).optional(),
+  entry: z.coerce.number().optional(),
 });
 
-export function ProfileForm() {
+export function NoticeForm() {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+  const AdditionalComponent = () => {
+    return (
+      <div className="m-28 mt-16 grid gap-4 lg:grid-cols-4">
+        <FormField
+          control={form.control}
+          name="pediment"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pediment</FormLabel>
+              <FormControl>
+                <Input type="number" placeholder="Pediment" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="pedimentCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pediment Code</FormLabel>
+              <FormControl>
+                <Input placeholder="Pediment Code" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="entry"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Entry Number</FormLabel>
+              <FormControl>
+                <Input type="number" placeholder="Entry Number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+    );
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,6 +140,9 @@ export function ProfileForm() {
       bulksepdc: "",
       otherdock: "",
       bulksother: "",
+      pediment: 0,
+      pedimentCode: "",
+      entry: 0,
     },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -559,6 +621,24 @@ export function ProfileForm() {
             />
           </div>
         </div>
+
+        <div className="flex items-center justify-center gap-4">
+          <label
+            htmlFor="checkbox"
+            className="text-md font-medium text-gray-900"
+          >
+            Would you like to add cross data?
+          </label>
+          <Input
+            type="checkbox"
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+            className="h-5 w-5 rounded border-gray-300 bg-gray-100 text-red-600 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-red-600"
+            id="checkbox"
+          />
+        </div>
+
+        {isChecked && <AdditionalComponent />}
 
         <Button type="submit">Submit</Button>
       </form>

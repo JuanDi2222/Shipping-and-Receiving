@@ -1,6 +1,6 @@
 "use client";
 import { z } from "zod";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "~/components/ui/button";
@@ -61,23 +61,9 @@ const formSchema = z.object({
     ],
     { required_error: "Please select a service type" },
   ),
-  items: z.array(
-    z.object({
-      partNumber: z.string().nonempty("Número de parte es requerido"),
-      name: z.string().nonempty("Nombre es requerido"),
-      countryOfOrigin: z.string().nonempty("País de origen es requerido"),
-      brand: z.string().nonempty("Marca es requerida"),
-      model: z.string().nonempty("Modelo es requerido"),
-      serial: z.string().nonempty("Serie es requerida"),
-      quantity: z.coerce.number().min(1, "Cantidad debe ser al menos 1"),
-      unitPrice: z.coerce
-        .number()
-        .min(1, "Precio unitario debe ser al menos 1"),
-    }),
-  ),
 });
 
-export function ShipmentForm() {
+export function MailForm() {
   const countries = getData();
   const [selectedOption, setSelectedOption] = useState<String | null>(null);
 
@@ -102,26 +88,8 @@ export function ShipmentForm() {
       project: "",
       type: "Standard Overnight",
       account: "",
-      items: [
-        {
-          partNumber: "",
-          name: "",
-          countryOfOrigin: "",
-          brand: "",
-          model: "",
-          serial: "",
-          quantity: 1,
-          unitPrice: 0,
-        },
-      ],
     },
   });
-
-  const { fields, append , remove} = useFieldArray({
-    control: form.control,
-    name: "items",
-  });
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
@@ -136,7 +104,7 @@ export function ShipmentForm() {
         <p className="leading-7 [&:not(:first-child)]:mt-6">
           Please fill in the following information to ship your goods to the
           desired destination. In case of not using the recipients information
-          it could cause delays in case of delivery problems.
+          it could cause delays in the delivery.
         </p>
         <div className="m-28 mt-16 grid gap-4 lg:grid-cols-4">
           <FormField
@@ -335,10 +303,6 @@ export function ShipmentForm() {
           />
         </div>
 
-        <p className="leading-7 [&:not(:first-child)]:mt-6">
-          * I certify that the information provided is correct and complete.
-        </p>
-
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Service Type:
         </h2>
@@ -442,191 +406,27 @@ export function ShipmentForm() {
             )}
           />
 
-          {selectedOption !== null && (
-            <>
-              {" "}
-              <FormField
-                control={form.control}
-                name="account"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Recipient's shipment account </FormLabel>
-                    <HoverCard>
-                      <HoverCardTrigger>
-                        <Info />
-                      </HoverCardTrigger>
-                      <HoverCardContent>
-                        In case that the recipient gives you a shipment account,
-                        please insert it here.
-                      </HoverCardContent>
-                    </HoverCard>
-                    <FormControl>
-                      <Input placeholder="Account Number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
-          )}
-        </div>
-
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          Description of goods:
-        </h2>
-
-        <p className="leading-7 [&:not(:first-child)]:mt-6">
-          Please insert de description of the goods to be shipped. Being more specific in internations shipments will reduce the risk of delays.
-        </p>
-
-        <div className="m-28 mt-16 grid gap-4 lg:grid-cols-8">
-          {fields.map((item, index) => (
-            <React.Fragment key={item.id}>
-            
-              <FormField
-                control={form.control}
-                name={`items.${index}.partNumber`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Part Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Part Number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`items.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`items.${index}.countryOfOrigin`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country of Origin</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Country of Origin" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`items.${index}.brand`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Brand</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Brand" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`items.${index}.model`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Model</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Model" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`items.${index}.serial`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Serial Number</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Serial Number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`items.${index}.quantity`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="Quantity" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`items.${index}.unitPrice`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Unit Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Unit Price"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              </React.Fragment>
-            
-          ))}
-
-          <Button
-            type="button"
-            onClick={() =>
-              append({
-                partNumber: "",
-                name: "",
-                countryOfOrigin: "",
-                brand: "",
-                model: "",
-                serial: "",
-                quantity: 1,
-                unitPrice: 0,
-              })
-            }
-          >
-            Add Item
-          </Button>
-
-          <Button
-              type="button"
-              onClick={() => remove(fields.length - 1)}
-              disabled={fields.length <= 1}
-            >
-              Remove Item
-            </Button>
+          {selectedOption !== null && <>            <FormField
+            control={form.control}
+            name="account"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Recipient's shipment account    </FormLabel>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info />
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    In case that the recipient gives you a shipment account, please insert it here.
+                  </HoverCardContent>
+                </HoverCard>
+                <FormControl>
+                  <Input placeholder="Account Number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /></>}
         </div>
         <Button type="submit">Submit</Button>
       </form>
