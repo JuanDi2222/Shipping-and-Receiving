@@ -18,6 +18,13 @@ import { Checkbox } from "~/components/ui/checkbox";
 
 import { useState } from "react";
 
+
+import { shipmentNotice } from "~/server/db/schema";
+
+import { createShipmentNotice } from "~/server/db/actions";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner"
+
 const formSchema = z.object({
   other: z.string().optional(),
   epdc: z.boolean().default(false).optional(),
@@ -28,26 +35,26 @@ const formSchema = z.object({
   panalpina: z.boolean().default(false).optional(),
   ups: z.boolean().default(false).optional(),
   ctransport: z.boolean().default(false).optional(),
-  fedexground: z.boolean().default(false).optional(),
-  line: z.string().min(1).max(100),
-  plates: z.string().min(1).max(10),
+  fedexGround: z.boolean().default(false).optional(),
+  line: z.string().min(1,{message: "Line is required"}).max(50,{message: "Too many characters"}),
+  plates: z.string().min(1,{message: "Plates is required "}).max(10),
   seal: z.coerce.number(),
   manifest: z.string().optional(),
-  bulks: z.coerce.number().min(1),
-  description: z.string().min(1).max(100),
-  operator: z.string().min(1).max(100),
-  creator: z.string().min(1).max(100),
-  bulksfedex: z.coerce.number().optional(),
-  bulksfdxfreight: z.coerce.number().optional(),
-  bulksfdxground: z.coerce.number().optional(),
-  bulksdhl: z.coerce.number().optional(),
-  bulksups: z.coerce.number().optional(),
-  etdcdock: z.string().max(100).optional(),
-  bulksetdc: z.string().max(100).optional(),
-  epdcdock: z.string().max(100).optional(),
-  bulksepdc: z.string().max(100).optional(),
-  otherdock: z.string().max(100).optional(),
-  bulksother: z.string().max(100).optional(),
+  bulks: z.coerce.number().min(1,{message: "Bulks is required "}),
+  description: z.string().min(1,{message: "A  description for goods is required"}).max(50,{message: "Too many characters"}),
+  operator: z.string().min(1,{message: "Operator is required"}).max(50,{message: "Too many characters"}),
+  creator: z.string().min(1,{message: "Creator is required"}).max(50,{message: "Too many characters"}),
+  bulksfedex: z.coerce.number().max(10,{message: "Too many characters"}).optional(),
+  bulksFedexFreight: z.coerce.number().optional(),
+  bulksFedexGround: z.coerce.number().optional(),
+  bulksDHL: z.coerce.number().optional(),
+  bulksUPS: z.coerce.number().optional(),
+  etdcdock: z.string().max(50,{message: "Too many characters"}).optional(),
+  bulksetdc: z.string().max(50,{message: "Too many characters"}).optional(),
+  epdcdock: z.string().max(50,{message: "Too many characters"}).optional(),
+  bulksepdc: z.string().max(50,{message: "Too many characters"}).optional(),
+  otherdock: z.string().max(50,{message: "Too many characters"}).optional(),
+  bulksOther: z.string().max(50,{message: "Too many characters"}).optional(),
   pediment: z.coerce.number().optional(),
   pedimentCode: z.string().max(3).optional(),
   entry: z.coerce.number().optional(),
@@ -120,7 +127,7 @@ export function NoticeForm() {
       panalpina: false,
       ups: false,
       ctransport: false,
-      fedexground: false,
+      fedexGround: false,
       line: "",
       plates: "",
       seal: 0,
@@ -129,24 +136,31 @@ export function NoticeForm() {
       description: "",
       operator: "",
       creator: "",
-      bulksfdxfreight: 0,
-      bulksfdxground: 0,
+      bulksFedexFreight: 0,
+      bulksFedexGround: 0,
       bulksfedex: 0,
-      bulksdhl: 0,
-      bulksups: 0,
+      bulksDHL: 0,
+      bulksUPS: 0,
       etdcdock: "",
       bulksetdc: "",
       epdcdock: "",
       bulksepdc: "",
       otherdock: "",
-      bulksother: "",
+      bulksOther: "",
       pediment: 0,
       pedimentCode: "",
       entry: 0,
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+
+  const router = useRouter();
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    createShipmentNotice (values);
+    router.push("/dashboard/admin");
+    toast.success("Shipment notice created successfully");
+
   }
 
   return (
@@ -303,7 +317,7 @@ export function NoticeForm() {
 
           <FormField
             control={form.control}
-            name="fedexground"
+            name="fedexGround"
             render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
@@ -473,7 +487,7 @@ export function NoticeForm() {
 
             <FormField
               control={form.control}
-              name="bulksfdxground"
+              name="bulksFedexGround"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Bulks Fedex Ground</FormLabel>
@@ -491,7 +505,7 @@ export function NoticeForm() {
 
             <FormField
               control={form.control}
-              name="bulksfdxfreight"
+              name="bulksFedexFreight"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Bulks Fedex Freight</FormLabel>
@@ -509,7 +523,7 @@ export function NoticeForm() {
 
             <FormField
               control={form.control}
-              name="bulksdhl"
+              name="bulksDHL"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Bulks DHL</FormLabel>
@@ -523,7 +537,7 @@ export function NoticeForm() {
 
             <FormField
               control={form.control}
-              name="bulksups"
+              name="bulksUPS"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Bulks UPS</FormLabel>
@@ -609,7 +623,7 @@ export function NoticeForm() {
             />
             <FormField
               control={form.control}
-              name="bulksother"
+              name="bulksOther"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

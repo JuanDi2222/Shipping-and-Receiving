@@ -37,18 +37,18 @@ import { getData } from "country-list";
 import React, { useState } from "react";
 
 const formSchema = z.object({
-  company: z.string().min(1).max(30),
-  address: z.string().min(1).max(100),
-  area: z.string().min(1).max(100),
-  city: z.string().min(1).max(100),
-  state: z.string().min(1).max(100),
-  zip: z.string().min(1).max(100),
+  company: z.string().min(1,{message: "Bulks is required "}).max(30),
+  address: z.string().min(1,{message: "Bulks is required "}).max(100),
+  area: z.string().min(1,{message: "Bulks is required "}).max(100),
+  city: z.string().min(1,{message: "Bulks is required "}).max(100),
+  state: z.string().min(1,{message: "Bulks is required "}).max(100),
+  zip: z.string().min(1,{message: "Bulks is required "}).max(100),
   country: z.string().max(100),
-  Recipient: z.string().min(1).max(100),
-  phone: z.string().min(1).max(100),
-  email: z.string().email().min(1).max(100),
-  description: z.string().min(1).max(100),
-  project: z.string().min(1).max(100),
+  Recipient: z.string().min(1,{message: "Bulks is required "}).max(100),
+  phone: z.string().min(1,{message: "Bulks is required "}).max(100),
+  email: z.string().email().min(1,{message: "Bulks is required "}).max(100),
+  description: z.string().min(1,{message: "Bulks is required "}).max(100),
+  project: z.string().min(1,{message: "Bulks is required "}).max(100),
   account: z.string().max(100),
   type: z.enum(
     [
@@ -63,12 +63,12 @@ const formSchema = z.object({
   ),
   items: z.array(
     z.object({
-      partNumber: z.string().nonempty("Número de parte es requerido"),
-      name: z.string().nonempty("Nombre es requerido"),
-      countryOfOrigin: z.string().nonempty("País de origen es requerido"),
-      brand: z.string().nonempty("Marca es requerida"),
-      model: z.string().nonempty("Modelo es requerido"),
-      serial: z.string().nonempty("Serie es requerida"),
+      partNumber: z.string(),
+      name: z.string().nonempty("This field is required"),
+      countryOfOrigin: z.string(),
+      brand: z.string(),
+      model: z.string(),
+      serial: z.string(),
       quantity: z.coerce.number().min(1, "Cantidad debe ser al menos 1"),
       unitPrice: z.coerce
         .number()
@@ -84,6 +84,8 @@ export function ShipmentForm() {
   const handleChange = (value: String) => {
     setSelectedOption(value);
   };
+
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -117,10 +119,28 @@ export function ShipmentForm() {
     },
   });
 
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
   const { fields, append , remove} = useFieldArray({
     control: form.control,
     name: "items",
   });
+
+
+  const AdditionalComponent = () => {
+    return (
+      <div className="m-28 mt-16 grid gap-4 lg:grid-cols-4">
+
+        <h1>Additional Component</h1>
+        
+      </div>
+    );
+  };
+
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -336,7 +356,7 @@ export function ShipmentForm() {
         </div>
 
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          * I certify that the information provided is correct and complete.
+          * I certify that all statements made and all information containes herein are true and correct and that I by submitting this form agree to it being used as evidence of responsibility
         </p>
 
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
@@ -476,7 +496,7 @@ export function ShipmentForm() {
         </h2>
 
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          Please insert de description of the goods to be shipped. Being more specific in internations shipments will reduce the risk of delays.
+          Please insert de description of the goods to be shipped. Being more specific in international shipments will reduce the risk of delays.
         </p>
 
         <div className="m-28 mt-16 grid gap-4 lg:grid-cols-8">
@@ -628,6 +648,25 @@ export function ShipmentForm() {
               Remove Item
             </Button>
         </div>
+
+        <div className="flex items-center justify-center gap-4">
+          <label
+            htmlFor="checkbox"
+            className="text-md font-medium text-gray-900"
+          >
+            Is the material hazardous?
+          </label>
+          <Input
+            type="checkbox"
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+            className="h-5 w-5 rounded border-gray-300 bg-gray-100 text-red-600 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-red-600"
+            id="checkbox"
+          />
+        </div>
+
+        {isChecked && <AdditionalComponent />}
+
         <Button type="submit">Submit</Button>
       </form>
     </Form>

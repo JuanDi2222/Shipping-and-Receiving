@@ -9,6 +9,8 @@ import {
   mysqlTableCreator,
   timestamp,
   varchar,
+  boolean,
+  longtext,
 } from "drizzle-orm/mysql-core";
 import mysql from "mysql2/promise"
 import { drizzle } from "drizzle-orm/mysql2"
@@ -16,7 +18,7 @@ import type { AdapterAccountType } from "next-auth/adapters"
 
 export const createTable = mysqlTableCreator((name) => `${name}`);
 
-export const users = createTable("user", {
+export const user = createTable("user", {
   id: varchar("id", { length: 255 })
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -26,14 +28,47 @@ export const users = createTable("user", {
     mode: "date",
     fsp: 3,
   }),
-  image: varchar("image", { length: 255 }),
+  image: longtext("image"),
+  phone: int("phone"),
+  department: int("department"),
   
 })
 
-export const avisoEmbarque = createTable("avisoEmbarque", {
-  id: int("id").primaryKey(),
-  date: varchar("data", { length: 255 }),
-  descricao: varchar("descricao", { length: 255 }),
+export const shipmentNotice = createTable("shipmentNotice", {
+  id: int("id").primaryKey().autoincrement(),
+  date: timestamp("date").notNull().defaultNow(),
+  epdc: boolean("epdc").default(false),
+  etdc: boolean("etdc").default(false),
+  drchih: boolean("drchih").default(false),
+  dhl: boolean("dhl").default(false),
+  fedex: boolean("fedex").default(false),
+  panalpina: boolean("panalpina").default(false),
+  ups: boolean("ups").default(false),
+  ctransport: boolean("ctransport").default(false),
+  fedexground: boolean("fedexGround").default(false),
+  other: varchar("other", { length: 255 }).default(""),
+  line: varchar("Line", { length: 255 }).notNull(),
+  plates: varchar("plates", { length: 255 }).notNull(),
+  seal: int("seal").notNull(),
+  manifest: varchar("manifest", { length: 255 }).default(""),
+  bulks: int("bulks").notNull(),
+  description: varchar("description", { length: 255 }).default(""),
+  operator: varchar("operator", { length: 255 }).notNull().default(""),
+  creator: varchar("creator", { length: 255 }).notNull().default(""), 
+  pediment: int("pediment").default(0),
+  pedimentCode: varchar("pedimentCode", { length: 255 }).default(""),
+  entry: int("entry").default(0),
+  bulksfedex: int("bulksfedex").default(0),
+  bulksfdxfreight: int("bulksFedexFreight").default(0),
+  bulksfdxground: int("bulksFedexGround").default(0),
+  bulksdhl: int("bulksDHL").default(0),
+  bulksups: int("bulksUPS").default(0),
+  etdcdock: varchar("etdcdock", { length: 255 }).default(""),
+  epdcdock: varchar("epdcdock", { length: 255 }).default(""),
+  otherdock: varchar("otherdock", { length: 255 }).default(""),
+  bulksetdc: varchar("bulksETDC", { length: 255 }).default(""),
+  bulksepdc: varchar("bulksEPDC", { length: 255 }).default(""),
+  bulksOther: varchar("bulksOther", { length: 255 }).default(""),
 });
 
  
@@ -42,7 +77,7 @@ export const accounts = createTable(
   {
     userId: varchar("userId", { length: 255 })
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
     type: varchar("type", { length: 255 })
       .$type<AdapterAccountType>()
       .notNull(),
@@ -67,7 +102,7 @@ export const sessions = createTable("session", {
   sessionToken: varchar("sessionToken", { length: 255 }).primaryKey(),
   userId: varchar("userId", { length: 255 })
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 })
  
@@ -82,3 +117,5 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 )
+
+

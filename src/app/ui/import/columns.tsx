@@ -41,7 +41,6 @@ import {
       accessorKey: "status",
       header: "Status",
       cell: ({ row }) => {
-
         return <Status status={row.getValue("status")} />
       },
     },

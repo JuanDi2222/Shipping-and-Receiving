@@ -4,6 +4,8 @@ import Table from "~/app/ui/export/table";
 import Search from "~/app/ui/export/search";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import {auth} from "~/auth"
+import {redirect} from "next/navigation";
 
 async function getData(): Promise<Shipment[]> {
   return [
@@ -46,6 +48,8 @@ async function getData(): Promise<Shipment[]> {
 }
 
 export default async function Page() {
+  const session = await auth();
+  if (!session) return redirect("/");
   const data = await getData();
   return (
     <>

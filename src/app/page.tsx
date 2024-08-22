@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { lusitana } from '~/app/ui/fonts';
 import Image from 'next/image';
+import {SignIn} from "~/app/ui/login/signin-button";
 
 export default function HomePage() {
   return (
@@ -26,12 +27,7 @@ export default function HomePage() {
             </a>
               , desarrollado por Juan c:
           </p>
-          <Link
-            href="/login"
-            className="flex items-center gap-5 self-start rounded-lg bg-red-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-pink-400 md:text-base"
-          >
-            <span>Log in</span> 
-          </Link>
+          <SignIn />
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           <Image

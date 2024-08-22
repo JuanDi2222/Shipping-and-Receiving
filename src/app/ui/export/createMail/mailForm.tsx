@@ -2,6 +2,14 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -406,29 +414,35 @@ export function MailForm() {
             )}
           />
 
-          {selectedOption !== null && <>            <FormField
-            control={form.control}
-            name="account"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Recipient's shipment account    </FormLabel>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <Info />
-                  </HoverCardTrigger>
-                  <HoverCardContent>
-                    In case that the recipient gives you a shipment account, please insert it here.
-                  </HoverCardContent>
-                </HoverCard>
-                <FormControl>
-                  <Input placeholder="Account Number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /></>}
+          {selectedOption !== null && (
+            <>
+              {" "}
+              <FormField
+                control={form.control}
+                name="account"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Recipient's shipment account </FormLabel>
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <Info />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        In case that the recipient gives you a shipment account,
+                        please insert it here.
+                      </HoverCardContent>
+                    </HoverCard>
+                    <FormControl>
+                      <Input placeholder="Account Number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
         </div>
-        <Button type="submit">Submit</Button>
+            <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
