@@ -1,56 +1,20 @@
-import { Shipment, columns } from "~/app/ui/import/columns";
-import { DataTable } from "~/app/ui/import/data-table";
-import Table from "~/app/ui/export/table";
+
 import Search from "~/app/ui/export/search";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import {auth} from "~/auth"
 import {redirect} from "next/navigation";
+import { getUserShipments, getUserMails } from "~/server/db/actions";
+import { DataTable } from "~/app/ui/export/createShipment/data-table";
+import { shipment, columns } from "~/app/ui/export/createShipment/columns";
 
-async function getData(): Promise<Shipment[]> {
-  return [
-    {
-      id: "728ed52f",
-      tracking: 321321,
-      status: "sent",
-      client: "Stellantis",
-      date: "2023-01-01",
-    },
-    {
-      id: "728ed52g",
-      tracking: 32124412,
-      status: "pending",
-      client: "Polaris",
-      date: "2023-01-01",
-    },
-    {
-      id: "728ed52n",
-      tracking: 32124412,
-      status: "delivered",
-      client: "Polaris",
-      date: "2022-01-03",
-    },
-    {
-      id: "728ed52a",
-      tracking: 32124412,
-      status: "processing",
-      client: "Polaris",
-      date: "2024-02-01",
-    },
-    {
-      id: "728ed52a",
-      tracking: 32124412,
-      status: "failed",
-      client: "Polaris",
-      date: "2024-02-01",
-    },
-  ];
-}
 
 export default async function Page() {
   const session = await auth();
   if (!session) return redirect("/");
-  const data = await getData();
+  const data = await getUserShipments();
+  const mails = await getUserMails();
+
   return (
     <>
       <div></div>
@@ -86,7 +50,7 @@ export default async function Page() {
               <PlusIcon className="h-5 md:ml-4" />
             </Link>
           </div>
-          <DataTable columns={columns} data={data} />
+          <DataTable columns={columns} data={mails} />
         </div>
       </div>
     </>

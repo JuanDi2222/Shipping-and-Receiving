@@ -8,7 +8,7 @@ export default async function ProfilePage() {
     const session = await auth();
     if (!session) return redirect("/");
 
-    const user = await getUsers();
+    const user = await getUsers(session?.user?.id);
     
     return (
         <div className="grid lg:grid-cols-2 gap-8 mt-16 m-28" >

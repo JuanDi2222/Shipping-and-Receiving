@@ -35,20 +35,23 @@ import {
 import { getData } from "country-list";
 
 import React, { useState } from "react";
+import { toast } from "sonner"
+import { createShipment } from "~/server/db/actions";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  company: z.string().min(1,{message: "Bulks is required "}).max(30),
-  address: z.string().min(1,{message: "Bulks is required "}).max(100),
-  area: z.string().min(1,{message: "Bulks is required "}).max(100),
-  city: z.string().min(1,{message: "Bulks is required "}).max(100),
-  state: z.string().min(1,{message: "Bulks is required "}).max(100),
-  zip: z.string().min(1,{message: "Bulks is required "}).max(100),
+  company: z.string().min(1,{message: "This field is required "}).max(100),
+  address: z.string().min(1,{message: "This field is required "}).max(100),
+  area: z.string().min(1,{message: "This field is required "}).max(100),
+  city: z.string().min(1,{message: "This field is required "}).max(100),
+  state: z.string().min(1,{message: "This field is required "}).max(100),
+  zip: z.string().min(1,{message: "This field is required "}).max(100),
   country: z.string().max(100),
-  Recipient: z.string().min(1,{message: "Bulks is required "}).max(100),
-  phone: z.string().min(1,{message: "Bulks is required "}).max(100),
-  email: z.string().email().min(1,{message: "Bulks is required "}).max(100),
-  description: z.string().min(1,{message: "Bulks is required "}).max(100),
-  project: z.string().min(1,{message: "Bulks is required "}).max(100),
+  recipient: z.string().min(1,{message: "This field is required "}).max(100),
+  phone: z.string().min(1,{message: "This field is required "}).max(100),
+  email: z.string().email().min(1,{message: "This field is required "}).max(100),
+  description: z.string().min(1,{message: "This field is required "}).max(100),
+  project: z.string().min(1,{message: "This field is required "}).max(100),
   account: z.string().max(100),
   type: z.enum(
     [
@@ -69,10 +72,10 @@ const formSchema = z.object({
       brand: z.string(),
       model: z.string(),
       serial: z.string(),
-      quantity: z.coerce.number().min(1, "Cantidad debe ser al menos 1"),
+      quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
       unitPrice: z.coerce
         .number()
-        .min(1, "Precio unitario debe ser al menos 1"),
+        .min(0.1, "Precio unitario debe ser mayor a 0"),
     }),
   ),
 });
@@ -97,7 +100,7 @@ export function ShipmentForm() {
       state: "",
       zip: "",
       country: "",
-      Recipient: "",
+      recipient: "",
       phone: "",
       email: "",
       description: "",
@@ -141,9 +144,12 @@ export function ShipmentForm() {
     );
   };
 
-
+  const router = useRouter();
+  
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    createShipment (values);
+    router.push("/dashboard/export");
+    toast.success("Shipment created ");
   }
 
   return (
@@ -277,7 +283,7 @@ export function ShipmentForm() {
 
           <FormField
             control={form.control}
-            name="Recipient"
+            name="recipient"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Recipient's name</FormLabel>

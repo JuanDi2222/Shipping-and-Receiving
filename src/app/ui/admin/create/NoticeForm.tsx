@@ -18,9 +18,6 @@ import { Checkbox } from "~/components/ui/checkbox";
 
 import { useState } from "react";
 
-
-import { shipmentNotice } from "~/server/db/schema";
-
 import { createShipmentNotice } from "~/server/db/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"
@@ -156,7 +153,6 @@ export function NoticeForm() {
   const router = useRouter();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     createShipmentNotice (values);
     router.push("/dashboard/admin");
     toast.success("Shipment notice created successfully");

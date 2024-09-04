@@ -17,6 +17,8 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     AUTH_DRIZZLE_URL: z.string(),
+    DHL_SECRET: z.string(),
+    DHL_API_KEY: z.string(),
 
   },
 
@@ -32,6 +34,8 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_URL: process.env.AUTH_URL,
     AUTH_DRIZZLE_URL: process.env.AUTH_DRIZZLE_URL,
+    DHL_API_KEY: process.env.DHL_API_KEY,
+    DHL_SECRET: process.env.DHL_SECRET,
     
   },
   /**

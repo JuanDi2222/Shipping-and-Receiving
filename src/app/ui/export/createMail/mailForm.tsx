@@ -44,19 +44,23 @@ import { getData } from "country-list";
 
 import React, { useState } from "react";
 
+import { toast } from "sonner"
+import { createShipment } from "~/server/db/actions";
+import { useRouter } from "next/navigation";
+
 const formSchema = z.object({
-  company: z.string().min(1).max(30),
-  address: z.string().min(1).max(100),
-  area: z.string().min(1).max(100),
-  city: z.string().min(1).max(100),
-  state: z.string().min(1).max(100),
-  zip: z.string().min(1).max(100),
+  company: z.string().min(1,{message: "This field is required "}).max(100),
+  address: z.string().min(1,{message: "This field is required "}).max(100),
+  area: z.string().min(1,{message: "This field is required "}).max(100),
+  city: z.string().min(1,{message: "This field is required "}).max(100),
+  state: z.string().min(1,{message: "This field is required "}).max(100),
+  zip: z.string().min(1,{message: "This field is required "}).max(100),
   country: z.string().max(100),
-  Recipient: z.string().min(1).max(100),
-  phone: z.string().min(1).max(100),
-  email: z.string().email().min(1).max(100),
-  description: z.string().min(1).max(100),
-  project: z.string().min(1).max(100),
+  recipient: z.string().min(1,{message: "This field is required "}).max(100),
+  phone: z.string().min(1,{message: "This field is required "}).max(100),
+  email: z.string().email().min(1,{message: "This field is required "}).max(100),
+  description: z.string().min(1,{message: "This field is required "}).max(100),
+  project: z.string().min(1,{message: "This field is required "}).max(100),
   account: z.string().max(100),
   type: z.enum(
     [
@@ -89,7 +93,7 @@ export function MailForm() {
       state: "",
       zip: "",
       country: "",
-      Recipient: "",
+      recipient: "",
       phone: "",
       email: "",
       description: "",
@@ -98,8 +102,12 @@ export function MailForm() {
       account: "",
     },
   });
+  const router = useRouter();
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    createShipment (values);
+    router.push("/dashboard/export");
+    toast.success("Mail created ");
   }
 
   return (
@@ -233,7 +241,7 @@ export function MailForm() {
 
           <FormField
             control={form.control}
-            name="Recipient"
+            name="recipient"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Recipient's name</FormLabel>

@@ -2,9 +2,9 @@ import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { auth } from "~/auth";
 import { redirect } from "next/navigation";
-import { DataTable } from "~/app/ui/admin/data-table";
-import { getShipmentNotices } from "~/server/db/actions";
-import { columns, ShipmentNotice } from "~/app/ui/admin/columns";
+import { getPendingShipments } from "~/server/db/actions";
+import { columns, shipment } from "~/app/ui/admin/pendingsTable/columns";
+import { PendingsTable } from "~/app/ui/admin/pendingsTable/data-table";
 import {
   Card,
   CardContent,
@@ -15,18 +15,23 @@ import {
 } from "~/components/ui/card";
 
 export default async function Page() {
-  const notices = await getShipmentNotices();
+  const notices = await getPendingShipments();
   const session = await auth();
-  if (!session) return redirect("/");
+  if (!session  ) return redirect("/");
 
   return (
     <main>
       <div className="m-28 mt-16 grid gap-8 lg:grid-cols-2">
         <div >
+        <div className="w-1000 grid p-8 lg:grid-cols-2">
+        <div>
+          <h2 className="scroll-m-20  pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+            Tables
+          </h2>
+        </div>
+      </div>
         <Card >
           <CardHeader>
-            <CardTitle>Tables</CardTitle>
-            <CardDescription>List of tables:</CardDescription>
           </CardHeader>
           <CardContent>
             <Link
@@ -57,6 +62,9 @@ export default async function Page() {
 
           </CardContent>
         </Card>
+        </div>
+        <div >
+          <PendingsTable columns={columns} data={notices} />
         </div>
       </div>
     </main>
