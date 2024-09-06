@@ -54,8 +54,6 @@ export function PendingsTable<TData, TValue>({
   });
 
   const saveChanges = () => {
-    console.log(data)
-
     data.forEach(data  => {
       data.status = "processing";
       updateShipment(data);

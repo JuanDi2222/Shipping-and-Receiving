@@ -105,7 +105,7 @@ export function MailForm() {
   const router = useRouter();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createShipment (values);
+    createShipment(values);
     router.push("/dashboard/export");
     toast.success("Mail created ");
   }

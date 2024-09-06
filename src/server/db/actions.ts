@@ -12,7 +12,9 @@ export async function createShipment(values: any) {
   ship.userId = session?.user?.id;
   const user = await getUsers(ship.userId);
   ship.requestor = user[0]?.name;
+  ship.service = ship.type;
 
+  if (ship?.items && ship.items.length > 0) {
   let totalPieces = 0;
   let totalCost = 0;
 
@@ -23,8 +25,10 @@ export async function createShipment(values: any) {
 
   ship.pieces = totalPieces;
   ship.cost = totalCost;
+}
 
   ship.goods = JSON.stringify(ship.items);
+
 
   await db.insert(shipment).values(ship);
 }
@@ -75,7 +79,9 @@ export async function updateShipmentNotice(values: any) {
 
 export async function updateShipment(values: any) {
   const ship = values;
-  ship.goods = JSON.stringify(ship.goods);
+  if (ship.goods && ship.goods.length > 0) {
+    ship.goods = JSON.stringify(ship.goods);
+  }
   await db.update(shipment).set(ship).where(eq(shipment.id, ship.id));
 }
 
