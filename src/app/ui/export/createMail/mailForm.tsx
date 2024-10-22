@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-
 import { Button } from "~/components/ui/button";
 import {
   Form,
@@ -29,9 +28,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
-
 import Info from "~/app/ui/info";
-
 import {
   Select,
   SelectContent,
@@ -39,14 +36,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-
 import { getData } from "country-list";
-
 import React, { useState } from "react";
-
 import { toast } from "sonner"
 import { createShipment } from "~/server/db/actions";
 import { useRouter } from "next/navigation";
+import { InfoDialog } from "~/app/ui/export/InfoDialog";
 
 const formSchema = z.object({
   company: z.string().min(1,{message: "This field is required "}).max(100),
@@ -103,14 +98,21 @@ export function MailForm() {
     },
   });
   const router = useRouter();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [hazardous, setHazardous] = useState(false);
+  const [priority, setPriority] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     createShipment(values);
-    router.push("/dashboard/export");
-    toast.success("Mail created ");
+    setPriority(values.type === "Priority Overnight");
+    setDialogOpen(true);
   }
+  const finish = () => {
+    setDialogOpen(false);
+    router.push("/dashboard/export");
+  };
 
-  return (
+  return (<>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
@@ -452,6 +454,13 @@ export function MailForm() {
         </div>
             <Button type="submit">Submit</Button>
       </form>
-    </Form>
+    </Form>.
+    <InfoDialog 
+        open={dialogOpen} 
+        onClose={finish} 
+        priority={priority} 
+        hazardous={hazardous} 
+      />
+      </>
   );
 }

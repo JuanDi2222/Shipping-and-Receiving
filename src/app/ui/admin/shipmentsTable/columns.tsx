@@ -3,7 +3,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 import Status from "~/app/ui/export/status";
 import { MoreHorizontal } from "lucide-react"
- 
 import { Button } from "~/components/ui/button"
 import {
   DropdownMenu,
@@ -13,10 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, ChangeEvent } from "react";
 import { deleteShipment, updateShipment } from "~/server/db/actions";
+import { Input } from "~/components/ui/input";
+import { cn } from "~/lib/utils"
 
 export type shipment = {
     id: number
@@ -49,7 +48,8 @@ export type shipment = {
     expectedDate: Date | null
     recievedBy: string
     bol: string
-    status: "sent"| "pending"| "processing"| "delivered" | "failed"
+    status: "sent"| "pending"| "processing"| "delivered" | "failed"  | "transit"
+    shippingCost: number
 }
 
 interface TableCellProps {
@@ -58,10 +58,17 @@ interface TableCellProps {
     column: any;
     table: any;
   }
+
+  type Option = {
+    label: string;
+    value: string;
+  };
   
   const TableCell: React.FC<TableCellProps> = ({ getValue, row, column, table }) => {
     const initialValue = getValue();
     const [value, setValue] = useState(initialValue);
+    const columnMeta = column.columnDef.meta;
+    const tableMeta = table.options.meta;
   
     useEffect(() => {
       setValue(initialValue);
@@ -70,15 +77,31 @@ interface TableCellProps {
     const onBlur = () => {
       table.options.meta?.updateData(row.index, column.id, value);
     };
+
+    const onSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setValue(e.target.value);
+        tableMeta?.updateData(row.index, column.id, e.target.value);
+      };
   
-    return (
-      <input
-        value={value ?? ''}
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={onBlur}
-      />
-    );
-  };
+    return columnMeta?.type === "select" ? (
+        <select
+        className={cn(
+          "flex h-10 w-40 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+        )}
+         onChange={onSelectChange} value={initialValue ?? ""}>
+          {columnMeta?.options?.map((option: Option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </select>
+      ) : (
+        <Input className="w-40"
+          value={value ?? ""}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={onBlur}
+          type={columnMeta?.type || "text"}
+        />
+      );
+    };
   
   function handleDelete (id: number) {
     deleteShipment(id);
@@ -111,6 +134,16 @@ export const columns: ColumnDef<shipment>[] = [
         accessorKey: "carrier",
         header: "Carrier",
         cell: TableCell,
+        meta: {
+            type: "select",
+            options: [
+              { value: "DHL", label: "DHL" },
+              { value: "UPS", label: "UPS" },
+              { value: "FedEx", label: "FedEx" },
+              { value: "Estafeta", label: "Estafeta" },
+              { value: "FedEx Freight", label: "FedEx Freight" },
+            ],
+          }
     },
 
     {
@@ -122,6 +155,16 @@ export const columns: ColumnDef<shipment>[] = [
         accessorKey: "service",
         header: "Service",
         cell: TableCell,
+        meta: {
+            type: "select",
+            options: [
+              { value: "Standard Overnight", label: "Standard Overnight" },
+              { value: "Second Business Day", label: "Second Business Day" },
+              { value: "Priority Overnight", label: "Priority Overnight" },
+              { value: "Next Day Delivery", label: "Next Day Delivery" },
+              { value: "International", label: "International" },
+            ],
+          }
     },
     {
         accessorKey: "account",
@@ -141,6 +184,7 @@ export const columns: ColumnDef<shipment>[] = [
     {
         accessorKey: "city",
         header: "City",
+        cell: TableCell,
     },
     {
         accessorKey: "state",
@@ -201,6 +245,10 @@ export const columns: ColumnDef<shipment>[] = [
         accessorKey: "cost",
         header: "Cost",
         cell: TableCell,
+    },
+    { accessorKey: "shippingCost",
+      header: "Shipping Cost",
+      cell: TableCell,
     },
     {
         accessorKey: "debit",

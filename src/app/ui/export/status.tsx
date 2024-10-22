@@ -12,6 +12,7 @@ export default function Status({ status }: { status: string }) {
           "bg-orange-500 text-white": status === "processing",
           'bg-blue-500 text-white': status === 'sent',
           'bg-red-500 text-white': status === 'failed',
+          'bg-yellow-500 text-white': status === 'transit',
         },
       )}
     >
@@ -43,6 +44,12 @@ export default function Status({ status }: { status: string }) {
         <>
           Failed
           <MegaphoneIcon className="ml-1 w-4 text-white" />
+        </>
+      ) : null}
+      {status === 'transit' ? (
+        <>
+          Transit
+          <ArrowUpRightIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}
     </span>

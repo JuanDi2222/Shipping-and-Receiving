@@ -19,6 +19,8 @@ export const env = createEnv({
     AUTH_DRIZZLE_URL: z.string(),
     DHL_SECRET: z.string(),
     DHL_API_KEY: z.string(),
+    FEDEX_SECRET: z.string(),
+    FEDEX_API_KEY: z.string(),
 
   },
 
@@ -36,6 +38,8 @@ export const env = createEnv({
     AUTH_DRIZZLE_URL: process.env.AUTH_DRIZZLE_URL,
     DHL_API_KEY: process.env.DHL_API_KEY,
     DHL_SECRET: process.env.DHL_SECRET,
+    FEDEX_API_KEY: process.env.FEDEX_API_KEY,
+    FEDEX_SECRET: process.env.FEDEX_SECRET,
     
   },
   /**

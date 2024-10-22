@@ -10,49 +10,45 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
 import { useState, useEffect } from "react";
-import {
-  deleteShipmentNotice,
-  updateShipmentNotice,
-} from "~/server/db/actions";
-
-import { ColumnDef } from "@tanstack/react-table"
+import { deleteShipmentNotice, updateShipmentNotice } from "~/server/db/actions";
+import { ColumnDef } from "@tanstack/react-table";
+import { Input } from "~/components/ui/input";
 
 export type ShipmentNotice = {
   id: number;
   date: Date;
-  epdc: boolean  | null;
-  etdc: boolean  | null;
-  drchih: boolean  | null;
-  dhl: boolean   | null;
-  fedex: boolean  | null;
-  panalpina: boolean  | null;
-  ups: boolean  | null;
-  ctransport: boolean  | null;
-  fedexground: boolean  | null;
-  other: string  | null;
-  line: string  | null;
-  plates: string  | null;
-  seal: number  | null;
-  manifest: string  | null;
-  bulks: number  | null;
-  description: string  | null;
-  operator: string  | null;
-  creator: string  | null;
-  pedimentCode: string  | null;
-  entry: number  | null;
-  bulksfedex: number  | null;
-  bulksfdxfreight: number  | null;
-  bulksfdxground: number  | null;
-  bulksdhl: number  | null;
-  bulksups: number  | null;
-  etdcdock: string  | null;
-  epdcdock: string  | null;
-  otherdock: string  | null;
-  bulksetdc: string  | null;
-  bulksepdc: string  | null;
-  bulksOther: string  | null;
+  epdc: boolean | null;
+  etdc: boolean | null;
+  drchih: boolean | null;
+  dhl: boolean | null;
+  fedex: boolean | null;
+  panalpina: boolean | null;
+  ups: boolean | null;
+  ctransport: boolean | null;
+  fedexground: boolean | null;
+  other: string | null;
+  line: string | null;
+  plates: string | null;
+  seal: number | null;
+  manifest: string | null;
+  bulks: number | null;
+  description: string | null;
+  operator: string | null;
+  creator: string | null;
+  pedimentCode: string | null;
+  entry: number | null;
+  bulksfedex: number | null;
+  bulksfdxfreight: number | null;
+  bulksfdxground: number | null;
+  bulksdhl: number | null;
+  bulksups: number | null;
+  etdcdock: string | null;
+  epdcdock: string | null;
+  otherdock: string | null;
+  bulksetdc: string | null;
+  bulksepdc: string | null;
+  bulksOther: string | null;
 };
 
 interface TableCellProps {
@@ -65,36 +61,50 @@ interface TableCellProps {
 const TableCell: React.FC<TableCellProps> = ({ getValue, row, column, table }) => {
   const initialValue = getValue();
   const [value, setValue] = useState(initialValue);
+  const columnMeta = column.columnDef.meta;
+  const tableMeta = table.options.meta;
 
   useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
   const onBlur = () => {
-    table.options.meta?.updateData(row.index, column.id, value);
+    tableMeta?.updateData(row.index, column.id, value);
   };
 
-  return (
-    <input
-      value={value}
+  const onCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checkedValue = e.target.checked;
+    setValue(checkedValue);
+    tableMeta?.updateData(row.index, column.id, checkedValue);
+  };
+
+  return columnMeta?.type === "checkbox" ? (
+    <Input className="w-4 h-6"
+      type="checkbox"
+      checked={value ?? false}
+      onChange={onCheckboxChange}
+    />
+  ) : (
+    <Input className="w-40"
+      value={value ?? ""}
       onChange={(e) => setValue(e.target.value)}
       onBlur={onBlur}
     />
   );
 };
 
-function handleDelete (id: number) {
+function handleDelete(id: number) {
   deleteShipmentNotice(id);
   window.location.reload();
-};
+}
 
-const handleUpdate = (row : any, column : any, table : any) => {
+const handleUpdate = (row: any, column: any, table: any) => {
   updateShipmentNotice(table.options.data[row.index]);
 };
 
-async function printPDF(id: number){
+async function printPDF(id: number) {
   window.open("/dashboard/admin/print/" + id);
-};
+}
 
 export const columns: ColumnDef<ShipmentNotice>[] = [
   {
@@ -104,6 +114,9 @@ export const columns: ColumnDef<ShipmentNotice>[] = [
   {
     accessorKey: "date",
     header: "Date",
+    cell: ({ row }) => {
+      return row.original.date.toLocaleDateString()
+    }
   },
   {
     accessorKey: "epdc",
@@ -313,9 +326,10 @@ export const columns: ColumnDef<ShipmentNotice>[] = [
             <DropdownMenuItem onClick={() => handleUpdate(row, column, table)}>
               Update
             </DropdownMenuItem>
-            
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => printPDF(ShipmentNotice.id)}>Print ShipmentNotice</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => printPDF(ShipmentNotice.id)}>
+              Print ShipmentNotice
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

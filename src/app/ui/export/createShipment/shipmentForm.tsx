@@ -2,7 +2,6 @@
 import { z } from "zod";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { Button } from "~/components/ui/button";
 import {
   Form,
@@ -21,9 +20,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
-
 import Info from "~/app/ui/info";
-
 import {
   Select,
   SelectContent,
@@ -31,13 +28,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-
 import { getData } from "country-list";
-
-import React, { useState } from "react";
 import { toast } from "sonner"
 import { createShipment } from "~/server/db/actions";
 import { useRouter } from "next/navigation";
+import { InfoDialog } from "~/app/ui/export/InfoDialog";
+import React, { useEffect, useState } from "react";
+import { revalidateTag } from "next/cache";
 
 const formSchema = z.object({
   company: z.string().min(1,{message: "This field is required "}).max(100),
@@ -46,7 +43,7 @@ const formSchema = z.object({
   city: z.string().min(1,{message: "This field is required "}).max(100),
   state: z.string().min(1,{message: "This field is required "}).max(100),
   zip: z.string().min(1,{message: "This field is required "}).max(100),
-  country: z.string().max(100),
+  country: z.string().min(1,{message: "This field is required "}),
   recipient: z.string().min(1,{message: "This field is required "}).max(100),
   phone: z.string().min(1,{message: "This field is required "}).max(100),
   email: z.string().email().min(1,{message: "This field is required "}).max(100),
@@ -68,14 +65,14 @@ const formSchema = z.object({
     z.object({
       partNumber: z.string(),
       name: z.string().nonempty("This field is required"),
-      countryOfOrigin: z.string(),
+      countryOfOrigin: z.string().nonempty("This field is required"),
       brand: z.string(),
       model: z.string(),
       serial: z.string(),
       quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
       unitPrice: z.coerce
         .number()
-        .min(0.1, "Precio unitario debe ser mayor a 0"),
+        .min(0.1, "Price must be over 0"),
     }),
   ),
 });
@@ -123,36 +120,34 @@ export function ShipmentForm() {
   });
 
   const [isChecked, setIsChecked] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [hazardous, setHazardous] = useState(false);
+  const [priority, setPriority] = useState(false);
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
   };
-
+  
   const { fields, append , remove} = useFieldArray({
     control: form.control,
     name: "items",
   });
 
-
-  const AdditionalComponent = () => {
-    return (
-      <div className="m-28 mt-16 grid gap-4 lg:grid-cols-4">
-
-        <h1>Additional Component</h1>
-        
-      </div>
-    );
-  };
-
   const router = useRouter();
   
   function onSubmit(values: z.infer<typeof formSchema>) {
     createShipment (values);
-    router.push("/dashboard/export");
-    toast.success("Shipment created ");
+    setHazardous(isChecked || false); 
+    setPriority(values.type === "Priority Overnight");
+    setDialogOpen(true);
   }
+  const finish = async () => {
+    setDialogOpen(false);
+    router.refresh();
+    router.push("/dashboard/export");
+  };
 
-  return (
+  return (<>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
@@ -459,6 +454,8 @@ export function ShipmentForm() {
                               International (3 to 5 transit days)
                             </FormLabel>
                           </FormItem>
+
+                          
                         </>
                       )}
                   </RadioGroup>
@@ -493,6 +490,9 @@ export function ShipmentForm() {
                   </FormItem>
                 )}
               />
+              <div>
+
+              </div>
             </>
           )}
         </div>
@@ -502,7 +502,7 @@ export function ShipmentForm() {
         </h2>
 
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          Please insert de description of the goods to be shipped. Being more specific in international shipments will reduce the risk of delays.
+          Please insert de description of the individual goods to be shipped. Being more specific in international shipments will reduce the risk of delays.
         </p>
 
         <div className="m-28 mt-16 grid gap-4 lg:grid-cols-8">
@@ -670,11 +670,15 @@ export function ShipmentForm() {
             id="checkbox"
           />
         </div>
-
-        {isChecked && <AdditionalComponent />}
-
         <Button type="submit">Submit</Button>
       </form>
     </Form>
+    <InfoDialog 
+        open={dialogOpen} 
+        onClose={finish} 
+        priority={priority} 
+        hazardous={hazardous} 
+      />
+    </>
   );
 }

@@ -44,7 +44,7 @@ const TableCell: React.FC<TableCellProps> = ({ getValue, row, column, table }) =
       table.options.meta?.updateData(row.index, column.id, value)
     }
   
-    return (<input value={value}  onChange={(e) => setValue(e.target.value)} onBlur={onBlur} />);
+    return (<Input className="w-40" value={value}  onChange={(e) => setValue(e.target.value)} onBlur={onBlur} />);
   }
 
   const handleUpdate = (row: any, table: any) => {

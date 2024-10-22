@@ -15,15 +15,9 @@ export default async function Page() {
   return (
     <main>
       <div className="grid lg:grid-cols-2 gap-8 mt-16 m-28" >
-        <div>
           <AreaChartHome />
-        </div>
-        <div >
           <BarChartHome />
-        </div>
-        <div>
           <DonutChartHome />
-        </div>
       </div>
     </main>
   );

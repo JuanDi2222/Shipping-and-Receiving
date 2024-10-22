@@ -10,7 +10,8 @@ import {
   boolean,
   longtext,
   mysqlEnum,
-  json
+  json,
+  date
 } from "drizzle-orm/mysql-core";
 import mysql from "mysql2/promise";
 import { drizzle } from "drizzle-orm/mysql2";
@@ -126,13 +127,14 @@ export const shipment = createTable("shipment", {
   quantity: int("quantity").notNull(),
   pieces: int("pieces").notNull(),
   cost: int("cost").notNull(),
+  shippingCost: int("shippingCost").notNull(),
   debit: int("debit").notNull(),
   requestor: varchar("requestor", { length: 255 }).notNull(),
   noticeId: int("noticeId"),
   userId: varchar("userId", { length: 255 }).notNull(),
-  shippingDate: timestamp("shippingDate"),
-  recievedDate: timestamp("recievedDate"),
-  expectedDate: timestamp("expectedDate"),
+  shippingDate: date("shippingDate"),
+  recievedDate: date("recievedDate"),
+  expectedDate: date("expectedDate"),
   recievedBy: varchar("recievedBy", { length: 255 }).notNull(),
   bol: varchar("BOL", { length: 255 }).notNull(),
   status: mysqlEnum("status", [
@@ -141,6 +143,7 @@ export const shipment = createTable("shipment", {
     "processing",
     "delivered",
     "failed",
+    "transit",
   ]).notNull(),
 });
 

@@ -6,7 +6,6 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -15,18 +14,22 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-
 import { Button } from "~/components/ui/button";
-
 import { useState, useEffect } from "react";
 import { updateShipment } from "~/server/db/actions";
+import { toast } from "sonner"
 
-interface DataTableProps<TData, TValue> {
+interface ShipmentData {
+  tracking: string;
+  status: string;
+}
+
+interface DataTableProps<TData extends ShipmentData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function PendingsTable<TData, TValue>({
+export function PendingsTable<TData extends ShipmentData, TValue>({
   columns,
   data: initialData,
 }: DataTableProps<TData, TValue>) {
@@ -55,23 +58,22 @@ export function PendingsTable<TData, TValue>({
 
   const saveChanges = () => {
     data.forEach(data  => {
-      data.status = "processing";
-      updateShipment(data);
+      if (data.tracking) {
+        data.status = "processing";
+        updateShipment(data);
+      }
     })
-
+    toast.success("Changes saved");
   }
 
   return (
     <div>
-      <div className="w-full grid p-8 lg:grid-cols-2">
-        <div>
-          <h2 className="scroll-m-20  pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+      <div className="grid lg:grid-cols-3">
+          <h2 className=" pb-2 text-3xl font-semibold ">
             Pendings
           </h2>
-        </div>
-        <div>
-          <Button onClick={saveChanges}>Save</Button>
-        </div>
+          <Button className="w-40" onClick={saveChanges}>Save</Button>
+          <Button className="w-40" onClick={() => window.location.reload()}>Refresh</Button>
       </div>
 
       <div className="rounded-md border">
