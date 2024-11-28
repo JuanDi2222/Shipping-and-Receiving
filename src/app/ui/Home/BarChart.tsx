@@ -17,6 +17,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "~/components/ui/chart"
+
+export const description = "A bar chart"
+
 const chartData = [
   { month: "January", desktop: 186 },
   { month: "February", desktop: 305 },
@@ -33,7 +36,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function BarChartHome() {
+export function BarChartHome() {
   return (
     <Card>
       <CardHeader>

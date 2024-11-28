@@ -12,7 +12,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@auth/drizzle-adapter": "^1.4.1",
+    "@auth/drizzle-adapter": "^1.7.4",
     "@azure/msal-node": "^2.8.1",
     "@headlessui/react": "^2.0.3",
     "@headlessui/tailwindcss": "^0.2.0",
@@ -37,7 +37,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "country-list": "^2.3.0",
-    "drizzle-orm": "^0.29.5",
+    "drizzle-orm": "^0.36.4",
     "lucide-react": "^0.378.0",
     "mysql2": "^3.9.1",
     "net": "^1.0.2",
@@ -48,7 +48,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.52.1",
-    "recharts": "^2.12.7",
+    "recharts": "^2.13.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",

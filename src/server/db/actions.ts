@@ -3,13 +3,13 @@
 import { db } from "~/server/db/index";
 import { shipmentNotice, shipment, user } from "~/server/db/schema";
 import { auth } from "~/auth";
-import { eq, and, isNull, isNotNull, desc } from "drizzle-orm";
+import { eq, and, isNull, isNotNull, desc, count, sql } from "drizzle-orm";
 import { redirect } from 'next/navigation'
 import { env } from "~/env.js";
 import { unstable_cache } from "next/cache";
 
 let fedexTokenCache = {
-  token:  "",
+  token: "",
   expiryTime: 0
 };
 
@@ -20,7 +20,7 @@ export async function fetchFedexToken() {
     return fedexTokenCache.token;
   }
 
-  let url = "https://apis-sandbox.fedex.com/oauth/token";
+  let url = "https://apis.fedex.com/oauth/token";
   let options = {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -39,7 +39,7 @@ export async function fetchFedexToken() {
     }
     const data = await response.json();
     fedexTokenCache.token = data.access_token;
-    fedexTokenCache.expiryTime = currentTime + 3600 * 1000; 
+    fedexTokenCache.expiryTime = currentTime + 3600 * 1000;
 
     return data.access_token;
   } catch (error) {
@@ -49,7 +49,7 @@ export async function fetchFedexToken() {
 }
 
 export async function getFedexTracking(tracking: string) {
-  let url = "https://apis-sandbox.fedex.com/track/v1/trackingnumbers";
+  let url = "https://apis.fedex.com/track/v1/trackingnumbers";
   let options = {
     method: "POST",
     headers: {
@@ -119,6 +119,7 @@ export async function getShipments() {
 export async function getUserShipments(session: any) {
   const shipments = await db.select().from(shipment).where(and(eq(shipment.userId, session?.user?.id), isNotNull(shipment.goods)));
   const fetchPromises = shipments.map(async (shipment: any) => {
+
     if (shipment.tracking && shipment.status !== "delivered" && shipment.carrier == "DHL") {
       const url = `https://api-eu.dhl.com/track/shipments?trackingNumber=${shipment.tracking}`;
       const options = { method: "GET", headers: { "DHL-API-Key": env.DHL_API_KEY } };
@@ -147,16 +148,51 @@ export async function getUserShipments(session: any) {
         if (shipmentStatus !== "delivered" && shipmentStatus !== "transit" && shipmentStatus !== "failure") {
           shipment.status = "sent"
         }
-
         await updateShipment(shipment);
       } catch (error) {
         console.error("Error:", error);
       }
     }
+    if (shipment.tracking && shipment.status !== "delivered" && (shipment.carrier == "FedEx" || shipment.carrier == "Fedex Freight")) {
+      const data = await getFedexTracking(shipment.tracking)
+
+      const trackResults = data?.output?.completeTrackResults?.[0]?.trackResults?.[0];
+
+      const scanEvents = trackResults?.scanEvents || [];
+
+      const dateAndTimes = trackResults?.dateAndTimes || [];
+
+      const latestEvent = scanEvents.length > 0 ? scanEvents[0] : null;
+      const latestEventType = latestEvent ? latestEvent.eventType : "N/A";
+
+      const pickupDateEntry = dateAndTimes.find((entry: any) => entry.type === "ACTUAL_PICKUP");
+      const pickupDate = pickupDateEntry ? pickupDateEntry.dateTime : "N/A";
+
+      const expectedDeliveryDate = trackResults?.standardTransitTimeWindow?.window?.ends || "N/A";
+
+      const deliveredDateEntry = dateAndTimes.find((entry: any) => entry.type === "ACTUAL_DELIVERY");
+      const deliveredDate = deliveredDateEntry ? deliveredDateEntry.dateTime : "N/A";
+
+      shipment.shippingDate = new Date(pickupDate)
+
+      if (latestEventType === "DL") {
+        shipment.recievedDate = new Date(deliveredDate);
+        shipment.status = "delivered";
+      }
+      if (latestEventType === "IT" || latestEventType === "AO" || latestEventType === "OD" || latestEventType === "AR") {
+        shipment.expectedDate = new Date(expectedDeliveryDate);
+        shipment.status = "transit";
+      }
+      if (latestEventType === "DY" || latestEventType === "DE") {
+        shipment.status = "failed";
+      }
+      if (latestEventType === "PU" ) {
+        shipment.status = "sent"
+      }
+      await updateShipment(shipment);
+    }
   });
-
   await Promise.all(fetchPromises);
-
   const updatedShipments = await db.select().from(shipment).orderBy(desc(shipment.date)).where(and(eq(shipment.userId, session?.user?.id), isNotNull(shipment.goods)));
   return updatedShipments;
 }
@@ -164,6 +200,83 @@ export async function getUserShipments(session: any) {
 
 export async function getUserMails(session: any) {
   const mails = await db.select().from(shipment).where(and(eq(shipment.userId, session?.user?.id), isNull(shipment.goods)));
+  const fetchPromises = mails.map(async (shipment: any) => {
+
+    if (shipment.tracking && shipment.status !== "delivered" && shipment.carrier == "DHL") {
+      const url = `https://api-eu.dhl.com/track/shipments?trackingNumber=${shipment.tracking}`;
+      const options = { method: "GET", headers: { "DHL-API-Key": env.DHL_API_KEY } };
+
+      try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const shipmentStatus = data.shipments[0].status.statusCode;
+
+        shipment.shippingDate = new Date(data.shipments[0].details.shipmentActivationDate)
+        if (shipmentStatus === "delivered") {
+          shipment.recievedDate = new Date(data.shipments[0].events[0].timestamp);
+          shipment.status = shipmentStatus;
+        }
+        if (shipmentStatus === "transit") {
+          shipment.expectedDate = new Date(data.shipments[0].estimatedTimeOfDelivery);
+          shipment.status = shipmentStatus;
+        }
+        if (shipmentStatus === "failure") {
+          shipment.status = "failed";
+        }
+        if (shipmentStatus !== "delivered" && shipmentStatus !== "transit" && shipmentStatus !== "failure") {
+          shipment.status = "sent"
+        }
+        await updateShipment(shipment);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    if (shipment.tracking && shipment.status !== "delivered" && (shipment.carrier == "FedEx" || shipment.carrier == "Fedex Freight")) {
+      const data = await getFedexTracking(shipment.tracking)
+
+      const trackResults = data?.output?.completeTrackResults?.[0]?.trackResults?.[0];
+
+      const scanEvents = trackResults?.scanEvents || [];
+
+      const dateAndTimes = trackResults?.dateAndTimes || [];
+
+      const latestEvent = scanEvents.length > 0 ? scanEvents[0] : null;
+      const latestEventType = latestEvent ? latestEvent.eventType : "N/A";
+
+      const pickupDateEntry = dateAndTimes.find((entry: any) => entry.type === "ACTUAL_PICKUP");
+      const pickupDate = pickupDateEntry ? pickupDateEntry.dateTime : "N/A";
+
+      const expectedDeliveryDate = trackResults?.standardTransitTimeWindow?.window?.ends || "N/A";
+
+      const deliveredDateEntry = dateAndTimes.find((entry: any) => entry.type === "ACTUAL_DELIVERY");
+      const deliveredDate = deliveredDateEntry ? deliveredDateEntry.dateTime : "N/A";
+
+      shipment.shippingDate = new Date(pickupDate)
+
+      if (latestEventType === "DL") {
+        shipment.recievedDate = new Date(deliveredDate);
+        shipment.status = "delivered";
+      }
+      if (latestEventType === "IT" || latestEventType === "AO" || latestEventType === "OD") {
+        shipment.expectedDate = new Date(expectedDeliveryDate);
+        shipment.status = "transit";
+      }
+      if (latestEventType === "DY" || latestEventType === "DE") {
+        shipment.status = "failed";
+      }
+      if (latestEventType === "PU") {
+        shipment.status = "sent"
+      }
+      await updateShipment(shipment);
+    }
+  });
+  await Promise.all(fetchPromises);
+  const updatedmails = await db.select().from(shipment).orderBy(desc(shipment.date)).where(and(eq(shipment.userId, session?.user?.id), isNull(shipment.goods)));
+  return updatedmails;
   return mails;
 }
 
@@ -226,3 +339,53 @@ export async function getPendingShipments() {
   return shipments;
 }
 
+export async function getDonutShart() {
+  interface DonutDataItem {
+    country: string;
+    count: number;
+    fill: string;
+  }
+  const currentYear = new Date().getFullYear();
+  
+  const counts = await db
+    .select({
+      country: shipment.country,
+      count: sql`COUNT(*)`.as("count")
+    })
+    .from(shipment)
+    .where(sql`YEAR(shipment.date) = ${currentYear}`)
+    .groupBy(shipment.country)
+    .limit(5)
+
+    counts.forEach((count: any) => {
+      count.country = count.country.toLowerCase();
+      count.fill = `var(--color-${count.country.toLowerCase()})`;
+    })
+  return counts as DonutDataItem[];
+}
+
+export async function getAreaShart() {
+  const currentYear = new Date().getFullYear();
+
+  const shipments = await db
+    .select()
+    .from(shipment)
+    .where(sql`YEAR(${shipment.date}) = ${currentYear}`);
+
+  const monthlyCounts: Record<string, number> = {};
+  
+  shipments.forEach((shipment) => {
+    const monthName = new Date(shipment.date).toLocaleString('default', { month: 'long' }); 
+    if (!monthlyCounts[monthName]) {
+      monthlyCounts[monthName] = 0;
+    }
+    monthlyCounts[monthName] += 1; 
+  });
+
+  const result = Object.entries(monthlyCounts).map(([month, count]) => ({
+    month,
+    count,
+  }));
+
+  return result;
+}

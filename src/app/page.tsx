@@ -3,6 +3,7 @@ import { lusitana } from '~/app/ui/fonts';
 import Image from 'next/image';
 import {SignIn} from "~/app/ui/login/signin-button";
 
+
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col p-6">
@@ -12,7 +13,6 @@ export default function HomePage() {
           alt="Logo"
           width={500}
           height={100}
-          
         />
       </div>
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">

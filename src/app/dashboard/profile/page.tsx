@@ -12,6 +12,7 @@ export default async function ProfilePage() {
     
     return (
         <div className="grid lg:grid-cols-2 gap-8 mt-16 m-28" >
+        
         <ProfileForm user = {user} />
         <ProfileImage user = {user}/>
         </div>

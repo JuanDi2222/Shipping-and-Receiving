@@ -39,8 +39,9 @@ export function ProfileForm({user}: {user: any}) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    updateUser(values);
-    router.push("/dashboard");
+    values.id = user[0].id
+    updateUser(values)
+    router.push("/dashboard")
     toast.success("User changed!");
   }
 

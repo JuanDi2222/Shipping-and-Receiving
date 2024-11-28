@@ -10,8 +10,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     MicrosoftEntraId({
       clientId: env.AUTH_MICROSOFT_ENTRA_ID_ID,
       clientSecret: env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
-      tenantId: env.AUTH_MICROSOFT_ENTRA_ID_TENANT_ID,
-      
+      issuer: "https://login.microsoftonline.com/organizations/v2.0",
     }),
   ],
   callbacks: {

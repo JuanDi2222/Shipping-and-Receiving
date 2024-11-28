@@ -56,16 +56,24 @@ export function PendingsTable<TData extends ShipmentData, TValue>({
     },
   });
 
-  const saveChanges = () => {
-    data.forEach(data  => {
-      if (data.tracking) {
-        data.status = "processing";
-        updateShipment(data);
-      }
-    })
-    toast.success("Changes saved");
-  }
+  const saveChanges = async () => {
+    try {
+      const promises = data.map(async (dataItem) => {
+        if (dataItem.tracking) {
+          dataItem.status = "processing";
+          await updateShipment(dataItem); 
+        }
+      });
+      
+      await Promise.all(promises); 
+      toast.success("Changes saved");
+    } catch (error) {
+      console.error("Error saving changes:", error);
+      toast.error("That Notice id does not exist");
+    }
+  };
 
+  
   return (
     <div>
       <div className="grid lg:grid-cols-3">
