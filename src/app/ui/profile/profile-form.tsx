@@ -21,12 +21,10 @@ const formSchema = z.object({
   name: z.string().max(100),
   phone: z.coerce.number().min(1, { message: "Phone is required" }),
   department: z.coerce.number().min(1, { message: "Department is required" }),
+  id: z.string()
 });
 
-
-
 export function ProfileForm({user}: {user: any}) {
-
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({

@@ -2,10 +2,6 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 export const env = createEnv({
-  /**
-   * Specify your server-side environment variables schema here. This way you can ensure the app
-   * isn't built with invalid env vars.
-   */
   server: {
     DATABASE_URL: z.string().url(),
     AUTH_MICROSOFT_ENTRA_ID_ID: z.string(),
@@ -21,12 +17,10 @@ export const env = createEnv({
     DHL_API_KEY: z.string(),
     FEDEX_SECRET: z.string(),
     FEDEX_API_KEY: z.string(),
-
   },
 
   client: {
   },
-
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
@@ -40,16 +34,8 @@ export const env = createEnv({
     DHL_SECRET: process.env.DHL_SECRET,
     FEDEX_API_KEY: process.env.FEDEX_API_KEY,
     FEDEX_SECRET: process.env.FEDEX_SECRET,
-    
   },
-  /**
-   * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
-   * useful for Docker builds.
-   */
+
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
-  /**
-   * Makes it so that empty strings are treated as undefined. `SOME_VAR: z.string()` and
-   * `SOME_VAR=''` will throw an error.
-   */
   emptyStringAsUndefined: true,
 });
