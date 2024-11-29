@@ -79,9 +79,9 @@ const formSchema = z.object({
 
 export function ShipmentForm() {
   const countries = getData();
-  const [selectedOption, setSelectedOption] = useState<String | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  const handleChange = (value: String) => {
+  const handleChange = (value: string) => {
     setSelectedOption(value);
   };
 
@@ -281,7 +281,7 @@ export function ShipmentForm() {
             name="recipient"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Recipient's name</FormLabel>
+                <FormLabel>Recipient&apos;s name</FormLabel>
                 <FormControl>
                   <Input placeholder="Name" {...field} />
                 </FormControl>
@@ -343,7 +343,7 @@ export function ShipmentForm() {
                     <Info />
                   </HoverCardTrigger>
                   <HoverCardContent>
-                    Please insert the number that appears on the project's time
+                    Please insert the number that appears on the project&apos;s time
                     sheet. In case that it does not apply, leave it blank.
                   </HoverCardContent>
                 </HoverCard>
@@ -473,7 +473,7 @@ export function ShipmentForm() {
                 name="account"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Recipient's shipment account </FormLabel>
+                    <FormLabel>Recipient&apos;s shipment account </FormLabel>
                     <HoverCard>
                       <HoverCardTrigger>
                         <Info />

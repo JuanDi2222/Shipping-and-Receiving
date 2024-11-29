@@ -3,7 +3,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { auth } from "~/auth";
 import { redirect } from "next/navigation";
 import { getPendingShipments } from "~/server/db/actions";
-import { columns, shipment } from "~/app/ui/admin/pendingsTable/columns";
+import { columns } from "~/app/ui/admin/pendingsTable/columns";
 import { PendingsTable } from "~/app/ui/admin/pendingsTable/data-table";
 import {
   Card,

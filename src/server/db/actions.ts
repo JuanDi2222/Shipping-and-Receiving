@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation'
 import { env } from "~/env.js";
 import { unstable_cache } from "next/cache";
 
-let fedexTokenCache = {
+const fedexTokenCache = {
   token: "",
   expiryTime: 0
 };
@@ -20,8 +20,8 @@ export async function fetchFedexToken() {
     return fedexTokenCache.token;
   }
 
-  let url = "https://apis.fedex.com/oauth/token";
-  let options = {
+  const url = "https://apis.fedex.com/oauth/token";
+    const options = {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -49,8 +49,8 @@ export async function fetchFedexToken() {
 }
 
 export async function getFedexTracking(tracking: string) {
-  let url = "https://apis.fedex.com/track/v1/trackingnumbers";
-  let options = {
+  const url = "https://apis.fedex.com/track/v1/trackingnumbers";
+  const options = {
     method: "POST",
     headers: {
       "Content-type": "application/json",
