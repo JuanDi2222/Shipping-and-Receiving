@@ -1,10 +1,7 @@
-import { drizzle } from "drizzle-orm/mysql2";
-import { createPool, type Pool } from "mysql2/promise";
-import mysql from "mysql2/promise"
+import { drizzle } from 'drizzle-orm/vercel-postgres';
+import { sql } from "@vercel/postgres";
 
-import { env } from "~/env";
 import * as schema from "./schema";
 
-const poolConnection = mysql.createPool({ host:"localhost", user: "root", database: "mtc", password: "juan" });
+export const db = drizzle (sql, {schema})
 
-export const db = drizzle(poolConnection, { schema, mode: "default" });

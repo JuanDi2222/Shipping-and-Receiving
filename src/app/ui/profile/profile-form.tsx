@@ -30,6 +30,7 @@ export function ProfileForm({user}: {user: any}) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: user[0].id,
       name: user.length > 0 ? user[0].name : 0,
       phone: user.length > 0 ? user[0].phone : 0,
       department: user.length > 0 ? user[0].department : 0,

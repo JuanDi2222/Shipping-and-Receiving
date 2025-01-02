@@ -49,9 +49,9 @@ export type shipment = {
   debit: number
   requestor: string
   noticeId: number | null
-  shippingDate: Date | null
-  recievedDate: Date | null
-  expectedDate: Date | null
+  shippingDate: string | null
+  recievedDate: string | null
+  expectedDate: string | null
   recievedBy: string
   bol: string
   status: "sent" | "pending" | "processing" | "delivered" | "failed" | "transit"
@@ -120,9 +120,9 @@ export const columns: ColumnDef<shipment>[] = [
                 <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Pieces: {shipment.pieces}</h3></DialogDescription>
                 <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Cost:  $ {shipment.cost}</h3></DialogDescription>
                 <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Debit: {shipment.debit}</h3></DialogDescription>
-                <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Shipping Date: {shipment.shippingDate?.toLocaleDateString()}</h3></DialogDescription>
-                <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Recieved Date: {shipment.recievedDate?.toLocaleDateString()}</h3></DialogDescription>
-                <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Expected Date: {shipment.expectedDate?.toLocaleDateString()}</h3></DialogDescription>
+                <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Shipping Date: {shipment.shippingDate}</h3></DialogDescription>
+                <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Recieved Date: {shipment.recievedDate}</h3></DialogDescription>
+                <DialogDescription><h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Expected Date: {shipment.expectedDate}</h3></DialogDescription>
               </div>
             </DialogHeader>
           </DialogContent>

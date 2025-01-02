@@ -10,7 +10,7 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
-  CardHeader,
+  CardHeader, 
   CardTitle,
 } from "~/components/ui/card";
 import { Summary } from "~/app/ui/admin/SummaryTable";
@@ -64,7 +64,7 @@ export default async function Page() {
         </div>
         {pending.map((pending) => {
           if(pending.goods) {
-          const goods = JSON.parse(pending.goods as string);
+          const goods = pending.goods as string
           return (
             <div key={pending.id} className="mt-8 col-span-2">
               <Summary id={pending.id} items={goods} cost={pending.cost} shipment={pending} />

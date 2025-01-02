@@ -16,7 +16,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "~/components/ui/chart"
-import { getDonutShart } from "~/server/db/actions"
 export const description = "A donut chart"
 
 interface DonutDataItem {

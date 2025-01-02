@@ -303,14 +303,17 @@ export async function getShipmentNotice(id: number) {
 }
 
 export async function updateShipmentNotice(values: any) {
-  const notice = values;
-  await db.update(shipmentNotice).set(notice).where(eq(shipmentNotice.id, notice.id));
+  const notice = values
+  const id = notice.id
+  delete notice.id
+  await db.update(shipmentNotice).set(notice).where(eq(shipmentNotice.id, id));
 }
 
 export async function updateShipment(values: any) {
   const ship = values;
-
-  await db.update(shipment).set(ship).where(eq(shipment.id, ship.id));
+  const id = ship.id
+  delete ship.id
+  await db.update(shipment).set(ship).where(eq(shipment.id, id));
 }
 
 export async function getUsers(id: any) {
@@ -339,53 +342,3 @@ export async function getPendingShipments() {
   return shipments;
 }
 
-export async function getDonutShart() {
-  interface DonutDataItem {
-    country: string;
-    count: number;
-    fill: string;
-  }
-  const currentYear = new Date().getFullYear();
-  
-  const counts = await db
-    .select({
-      country: shipment.country,
-      count: sql`COUNT(*)`.as("count")
-    })
-    .from(shipment)
-    .where(sql`YEAR(shipment.date) = ${currentYear}`)
-    .groupBy(shipment.country)
-    .limit(5)
-
-    counts.forEach((count: any) => {
-      count.country = count.country.toLowerCase();
-      count.fill = `var(--color-${count.country.toLowerCase()})`;
-    })
-  return counts as DonutDataItem[];
-}
-
-export async function getAreaShart() {
-  const currentYear = new Date().getFullYear();
-
-  const shipments = await db
-    .select()
-    .from(shipment)
-    .where(sql`YEAR(${shipment.date}) = ${currentYear}`);
-
-  const monthlyCounts: Record<string, number> = {};
-  
-  shipments.forEach((shipment) => {
-    const monthName = new Date(shipment.date).toLocaleString('default', { month: 'long' }); 
-    if (!monthlyCounts[monthName]) {
-      monthlyCounts[monthName] = 0;
-    }
-    monthlyCounts[monthName] += 1; 
-  });
-
-  const result = Object.entries(monthlyCounts).map(([month, count]) => ({
-    month,
-    count,
-  }));
-
-  return result;
-}

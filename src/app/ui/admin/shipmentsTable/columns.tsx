@@ -22,7 +22,7 @@ export type shipment = {
     date: Date 
     carrier: "DHL" | "UPS"| "FedEx"| "FedEx Freight"| "Estafeta"
     tracking: string
-    service: "Standard Overnight"| "Second Business Day"| "Ground"| "Priority Overnight"| "Next Day Delivery"| "International"
+    service: "Standard Overnight"| "Second Business Day"| "Ground"| "Priority Overnight"| "Next Day Delivery"| "International" 
     account: string
     company: string
     address: string
@@ -43,9 +43,9 @@ export type shipment = {
     debit: number
     requestor: string
     noticeId: number | null
-    shippingDate: Date | null
-    recievedDate: Date | null
-    expectedDate: Date | null
+    shippingDate: string | null
+    recievedDate: string | null
+    expectedDate: string | null
     recievedBy: string
     bol: string
     status: "sent"| "pending"| "processing"| "delivered" | "failed"  | "transit"
@@ -269,21 +269,21 @@ export const columns: ColumnDef<shipment>[] = [
         accessorKey: "shippingDate",
         header: "Shipping Date",
         cell: ({row}) => {
-            return row.original.shippingDate?.toLocaleDateString()
+            return row.original.shippingDate
         }
     },
     {
         accessorKey: "recievedDate",
         header: "Recieved Date",
         cell: ({row}) => {
-            return row.original.recievedDate?.toLocaleDateString()
+            return row.original.recievedDate
         }
     },
     {
         accessorKey: "expectedDate",
         header: "Expected Date",
         cell: ({row}) => {
-            return row.original.expectedDate?.toLocaleDateString()
+            return row.original.expectedDate
         }
     },
     {

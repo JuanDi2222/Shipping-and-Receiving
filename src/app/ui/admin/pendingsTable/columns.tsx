@@ -17,9 +17,9 @@ import { cn } from "~/lib/utils"
 export type shipment = {
   id: number
   date: Date
-  carrier: "DHL" | "UPS" | "FedEx" | "FedEx Freight" | "Estafeta"
+  carrier: "DHL" | "UPS" | "FedEx" | "FedEx Freight" | "Estafeta" 
   tracking: string
-  service: "Standard Overnight" | "Second Business Day" | "Ground" | "Priority Overnight" | "Next Day Delivery" | "International"
+  service: "Standard Overnight" | "Second Business Day" | "Ground" | "Priority Overnight" | "Next Day Delivery" | "International" 
   account: string
   company: string
   address: string
@@ -40,9 +40,9 @@ export type shipment = {
   debit: number
   requestor: string
   noticeId: number | null
-  shippingDate: Date | null
-  recievedDate: Date | null
-  expectedDate: Date | null
+  shippingDate: string | null
+  recievedDate: string | null
+  expectedDate: string | null
   recievedBy: string
   bol: string
   status: "sent" | "pending" | "processing" | "delivered" | "failed" | "transit"
