@@ -18,34 +18,34 @@ import {
   ChartTooltipContent,
 } from "~/components/ui/chart"
 
-export const description = "A bar chart"
+interface BarChartItem {
+  month: string,
+  cost: number
+}
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-]
+interface BarChartHomeProps {
+  barData: BarChartItem[]
+}
+
+export const description = "Export cost"
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "cost",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function BarChartHome() {
+export function BarChartHome({barData}: BarChartHomeProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Export Customs Cost</CardTitle>
+        <CardDescription>Showing customs total cost for the year</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+          <BarChart accessibilityLayer data={barData}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="month"
@@ -58,18 +58,10 @@ export function BarChartHome() {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
+            <Bar dataKey="cost" fill="var(--color-cost)" stroke="var(--color-cost)" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   )
 }

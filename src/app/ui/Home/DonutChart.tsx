@@ -55,7 +55,7 @@ export function DonutChartHome({ donutData }: DonutChartHomeProps) {
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Export countries</CardTitle>
-        <CardDescription> Year 2024</CardDescription>
+        <CardDescription> Current Year</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

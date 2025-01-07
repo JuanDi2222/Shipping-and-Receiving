@@ -342,3 +342,84 @@ export async function getPendingShipments() {
   return shipments;
 }
 
+
+export async function getDonutShart() {
+  interface DonutDataItem {
+    country: string;
+    count: number;
+    fill: string;
+  }
+  const currentYear = new Date().getFullYear();
+
+  const counts = await db
+    .select({
+      country: shipment.country,
+      count: count()
+    })
+    .from(shipment)
+    .where(sql`EXTRACT(YEAR FROM shipment.date) = ${currentYear}`)
+    .groupBy(shipment.country)
+    .limit(5)
+
+    counts.forEach((count: any) => {
+      count.country = count.country.toLowerCase();
+      count.fill = `var(--color-${count.country})`;
+    })
+  return counts as DonutDataItem[];
+}
+
+
+
+export async function getAreaShart() {
+  const currentYear = new Date().getFullYear();
+
+  const shipments = await db
+    .select()
+    .from(shipment)
+    .where(sql`EXTRACT(YEAR FROM shipment.date) = ${currentYear}`)
+
+  const monthlyCounts: Record<string, number> = {};
+
+  shipments.forEach((shipment) => {
+    const monthName = new Date(shipment.date).toLocaleString('default', { month: 'long' }); 
+    if (!monthlyCounts[monthName]) {
+      monthlyCounts[monthName] = 0;
+    }
+    monthlyCounts[monthName] += 1; 
+  });
+
+  const result = Object.entries(monthlyCounts).map(([month, count]) => ({
+    month,
+    count,
+  }));
+
+  return result;
+}
+
+
+export async function getBarChart() {
+  const currentYear = new Date().getFullYear();
+
+  const shipments = await db
+    .select({
+      date: shipment.date,
+      cost: shipment.cost,
+    })
+    .from(shipment)
+    .where(sql`EXTRACT(YEAR FROM shipment.date) = ${currentYear}`);
+
+  const monthlyCosts: Record<string, number> = {};
+  shipments.forEach((shipment) => {
+    const monthName = new Date(shipment.date).toLocaleString("default", { month: "long" });
+    if (!monthlyCosts[monthName]) {
+      monthlyCosts[monthName] = 0;
+    }
+    monthlyCosts[monthName] += shipment.cost;
+  });
+
+  const result = Object.entries(monthlyCosts).map(([month, cost]) => ({
+    month,
+    cost,
+  }));
+  return result;
+}

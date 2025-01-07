@@ -20,17 +20,26 @@ import {
 
 export const description = "A stacked area chart"
 
+interface AreaShartItem {
+  month: string,
+  count: number
+}
+
+interface AreaChartHomeProps {
+  areaData: AreaShartItem[];
+}
+
 
 const chartConfig = {
   count: {
     label: "Count",
-    color: "hsl(var(--chart-2))",
+    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
 
 
-export function AreaChartHome(areaData: any) {
+export function AreaChartHome({areaData}: AreaChartHomeProps) {
   return (
     <Card>
       <CardHeader>
@@ -64,9 +73,9 @@ export function AreaChartHome(areaData: any) {
             <Area
               dataKey="count"
               type="natural"
-              fill="var(--color-mobile)"
+              fill="var(--color-count)"
               fillOpacity={0.4}
-              stroke="var(--color-mobile)"
+              stroke="var(--color-count)"
               stackId="a"
             />
           </AreaChart>
