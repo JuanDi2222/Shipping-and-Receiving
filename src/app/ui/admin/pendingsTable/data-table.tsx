@@ -5,7 +5,14 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
 import {
   Table,
   TableBody,
@@ -18,6 +25,7 @@ import { Button } from "~/components/ui/button";
 import { useState, useEffect } from "react";
 import { updateShipment } from "~/server/db/actions";
 import { toast } from "sonner"
+import * as React from "react"
 
 interface ShipmentData {
   tracking: string;
@@ -32,13 +40,20 @@ interface DataTableProps<TData extends ShipmentData, TValue> {
 export function PendingsTable<TData extends ShipmentData, TValue>({
   columns,
   data: initialData,
+  
 }: DataTableProps<TData, TValue>) {
   const [data, setData] = useState(initialData);
+
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: {
+      columnVisibility,
+    },
     meta: {
       updateData: (rowIndex: number, columnId: string, value: string) => {
         setData((old) =>
@@ -76,13 +91,42 @@ export function PendingsTable<TData extends ShipmentData, TValue>({
   
   return (
     <div>
-      <div className="grid lg:grid-cols-3">
+      <div className="grid lg:grid-cols-4">
           <h2 className=" pb-2 text-3xl font-semibold ">
             Pendings
           </h2>
           <Button className="w-40" onClick={saveChanges}>Save</Button>
           <Button className="w-40" onClick={() => window.location.reload()}>Refresh</Button>
+          <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter(
+                (column) => column.getCanHide()
+              )
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
 
       <div className="rounded-md border">
         <Table>

@@ -13,6 +13,7 @@ import {
 import { useState, useEffect, ChangeEvent } from "react";
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils"
+import { Checkbox } from "~/components/ui/checkbox"
 
 export type shipment = {
   id: number
@@ -102,6 +103,7 @@ const TableCell: React.FC<TableCellProps> = ({ getValue, row, column, table }) =
 
 
 export const columns: ColumnDef<shipment>[] = [
+  
   {
     accessorKey: "id",
     header: "ID",

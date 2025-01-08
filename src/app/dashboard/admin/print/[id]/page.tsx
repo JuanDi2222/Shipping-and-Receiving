@@ -8,6 +8,7 @@ export default async function Page({ params }: { params: { id: number } }) {
   const notice = await getShipmentNotice(params.id);
   const session = await auth();
   if (!session) return redirect("/");
+  
   return (
     <div className= "h-full w-full">
         <PDFView data={notice[0]}/>
