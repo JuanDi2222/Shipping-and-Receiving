@@ -30,7 +30,7 @@ interface BarChartHomeProps {
 export const description = "Export cost"
 
 const chartConfig = {
-  desktop: {
+  cost: {
     label: "cost",
     color: "hsl(var(--chart-1))",
   },

@@ -12,12 +12,14 @@ import {
 import { useState, useEffect } from "react";
 
 
-export default function PDFView(data: any) {
+export function PDFView(data: any) {
   const notice = data.data;
+
+  
 
   Font.register({
     family: "rambla",
-    src: "http://fonts.gstatic.com/s/abel/v6/N59kklKPso9WzbZH9jwJSg.ttf",
+    src: "https://fonts.gstatic.com/s/abel/v6/N59kklKPso9WzbZH9jwJSg.ttf",
   })
 
   const styles = StyleSheet.create({
@@ -83,7 +85,7 @@ export default function PDFView(data: any) {
               <Text style={styles.text}>Bultos: {notice.bulks}</Text>
               <Text style={styles.text}>Nombre del Operador: {notice.operator}</Text>
               <Text style={styles.text}>Generado por: {notice.creator}</Text>
-              <Text style={styles.text}>Sello#: {notice.seal}</Text>
+              <Text style={styles.text}>Sello#: 0{notice.seal}</Text>
               <Text style={styles.text}>Placas: {notice.plates}</Text>
               <Text style={styles.text}>Manifiestos de embarque: {notice.manifest}</Text>
 

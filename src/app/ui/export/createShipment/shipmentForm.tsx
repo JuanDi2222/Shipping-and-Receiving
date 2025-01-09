@@ -36,6 +36,8 @@ import { InfoDialog } from "~/app/ui/export/InfoDialog";
 import React, { useEffect, useState } from "react";
 import { revalidateTag } from "next/cache";
 
+import { BellAlertIcon } from '@heroicons/react/24/outline';
+
 const formSchema = z.object({
   company: z.string().min(1,{message: "This field is required "}).max(100),
   address: z.string().min(1,{message: "This field is required "}).max(100),
@@ -370,7 +372,7 @@ export function ShipmentForm() {
           information.
         </p>
 
-        <div className="m-28 mt-16 grid gap-4 lg:grid-cols-4">
+        <div className="m-28 mt-16 grid gap-4 lg:grid-cols-4 ">
           <FormField
             control={form.control}
             name="type"
@@ -488,8 +490,13 @@ export function ShipmentForm() {
                     </FormControl>
                     <FormMessage />
                   </FormItem>
+                  
                 )}
               />
+              <div className="col-span-2">
+
+              <span className="text-black text-2xl text-justify inline-flex gap-4"> <BellAlertIcon className="text-red-600 w-20"/> For international shipments we will need further confirmation from the destination to prevent returns or delays.</span>
+              </div>
               <div>
 
               </div>
