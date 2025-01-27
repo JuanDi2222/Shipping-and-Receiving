@@ -14,7 +14,7 @@ import { getDonutShart, getAreaShart, getBarChart } from "~/server/db/actions";
 export default async function Page() {
   
   const session = await auth();
-  
+  if (!session) return redirect("/");
   const donutData = await getDonutShart();
   const areaData = await getAreaShart();
   const barData = await getBarChart();
