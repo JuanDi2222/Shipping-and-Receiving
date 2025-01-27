@@ -11,6 +11,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: env.AUTH_MICROSOFT_ENTRA_ID_ID,
       clientSecret: env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
       issuer: "https://login.microsoftonline.com/organizations/v2.0",
+      authorization: {
+        params: {
+          scope: "openid profile email Mail.Send User.Read",
+        },
+      },
     }),
   ],
   callbacks: {
