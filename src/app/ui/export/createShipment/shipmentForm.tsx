@@ -139,6 +139,7 @@ export function ShipmentForm() {
   
   function onSubmit(values: z.infer<typeof formSchema>) {
     createShipment (values);
+    
     setHazardous(isChecked || false); 
     setPriority(values.type === "Priority Overnight");
     setDialogOpen(true);

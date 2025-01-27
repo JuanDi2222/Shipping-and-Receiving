@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "~/server/db/index";
-import { shipmentNotice, shipment, user } from "~/server/db/schema";
+import { shipmentNotice, shipment, user , sessions } from "~/server/db/schema";
 import { auth } from "~/auth";
 import { eq, and, isNull, isNotNull, desc, count, sql } from "drizzle-orm";
 import { redirect } from 'next/navigation'
@@ -422,4 +422,8 @@ export async function getBarChart() {
     cost,
   }));
   return result;
+}
+export async function getUserToken(id: any) {
+  const token =  await db.select({token: sessions.sessionToken}).from(sessions).where(eq(sessions.userId, id.user.id))
+  return token
 }
