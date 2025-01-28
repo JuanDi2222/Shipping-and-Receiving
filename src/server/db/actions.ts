@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "~/server/db/index";
-import { shipmentNotice, shipment, user , sessions } from "~/server/db/schema";
+import { shipmentNotice, shipment, user , sessions, accounts } from "~/server/db/schema";
 import { auth } from "~/auth";
 import { eq, and, isNull, isNotNull, desc, count, sql } from "drizzle-orm";
 import { redirect } from 'next/navigation'
