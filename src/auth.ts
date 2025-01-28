@@ -13,7 +13,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       issuer: "https://login.microsoftonline.com/organizations/v2.0",
       authorization: {
         params: {
-          scope: "openid profile email Mail.Send User.Read",
+          scope: "openid profile email Mail.Send User.Read offline_access",
         },
       },
     }),
