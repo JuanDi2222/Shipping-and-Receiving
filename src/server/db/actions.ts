@@ -424,6 +424,6 @@ export async function getBarChart() {
   return result;
 }
 export async function getUserToken(id: any) {
-  const token =  await db.select({token: accounts.access_token}).from(accounts).where(eq(accounts.userId, id.user.id))
+  const token =  await db.select({token: accounts.access_token}).from(accounts).where(eq(accounts.userId, id))
   return token
 }
