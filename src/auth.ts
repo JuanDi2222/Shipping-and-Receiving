@@ -52,7 +52,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           await db.update(accounts).set({
             access_token: tokens.access_token,
             refresh_token: tokens.refresh_token,
-            expires_at: Date.now() + tokens.expires_in * 1000,
+            expires_at: Math.floor(Date.now() / 1000 + tokens.expires_in),
           }).where(eq(accounts.userId, user.id));
         } catch (error) {
           console.error('Error refreshing token:', error);
