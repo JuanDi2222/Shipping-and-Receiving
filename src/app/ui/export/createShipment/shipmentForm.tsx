@@ -37,6 +37,7 @@ import React, { useEffect, useState } from "react";
 import { revalidateTag } from "next/cache";
 
 import { BellAlertIcon } from '@heroicons/react/24/outline';
+import { sendEmail } from "~/server/mail/mail";
 
 const formSchema = z.object({
   company: z.string().min(1,{message: "This field is required "}).max(100),
@@ -139,6 +140,7 @@ export function ShipmentForm() {
   
   function onSubmit(values: z.infer<typeof formSchema>) {
     createShipment (values);
+    sendEmail(values);
     
     setHazardous(isChecked || false); 
     setPriority(values.type === "Priority Overnight");

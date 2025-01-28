@@ -39,7 +39,7 @@ export default async function HomePage() {
             toRecipients: [
               {
                 emailAddress: {
-                  address: "logisticsmtc@phinia.com",
+                  address: "l20112166@cdjuarez.tecnm.mx",
                 },
               },
             ],
