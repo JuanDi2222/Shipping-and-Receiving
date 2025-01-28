@@ -1,4 +1,5 @@
       
+       "use server"
        import { getUserToken } from "../db/actions";
        import { auth } from "~/auth";
 
