@@ -18,7 +18,7 @@
             subject: "Microsoft graph API test",
             body: {
               contentType: "Text",
-              content: `Se va a hacer un envio con los siguyientes datos: 
+              content: `Se va a hacer un envio con los siguientes datos: 
               Requestor: ${values.requestor}
               Country: ${values.country}
               Service: ${values.service}`,
