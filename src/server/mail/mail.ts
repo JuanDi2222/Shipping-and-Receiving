@@ -13,6 +13,8 @@ export async function sendEmail(values: any) {
       </div>`
     : '';
 
+  const account = values?.account || "Phinia";  
+
   const emailBody = `
     <!DOCTYPE html>
     <html lang="en">
@@ -75,10 +77,11 @@ export async function sendEmail(values: any) {
                 <p><strong>Destination:</strong> ${values.company}</p>
                 <p><strong>Country:</strong> ${values.country}</p>
                 <p><strong>Service:</strong> ${values.type}</p>
+                <p><strong>Account:</strong> ${values.account}</p>
                 <p>Remember that the materials to be sent have to be with the shipping team before 8:30 AM for international shipments. National shipments vary by service.</p>
             </div>
             <div class="footer">
-                <p>&copy; 2023 Your Company Name. All rights reserved.</p>
+                <p>Phinia MTC Logistics Team</p>
             </div>
         </div>
     </body>
@@ -93,7 +96,7 @@ export async function sendEmail(values: any) {
     },
     body: JSON.stringify({
       message: {
-        subject: "Microsoft Graph API Test - Shipment Notification",
+        subject: "Shipment Notification id: " + values.id,
         body: {
           contentType: "HTML",
           content: emailBody, 
