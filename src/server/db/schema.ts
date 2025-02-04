@@ -14,6 +14,7 @@ import {
   pgEnum,
   pgTable,
 } from "drizzle-orm/pg-core";
+import { request } from "http";
 import type { AdapterAccountType } from "next-auth/adapters";
 
 
@@ -191,3 +192,17 @@ export const authenticators = pgTable(
     }),
   })
 )
+
+export const mports = pgTable("import", {
+  id: integer("id").primaryKey(),
+  date: timestamp("date").notNull().defaultNow(),
+  job: varchar("job", { length: 255 }),
+  carrier: carrierEnum().notNull().default("DHL"),
+  tracking: varchar("tracking", { length: 255 }).notNull().default(""),
+  supplier: varchar("supplier", { length: 255 }).notNull().default(""),
+  bulks: varchar("bulks", { length: 255 }).notNull(),
+  description: varchar("description", { length: 255 }).notNull(),
+  requestor: varchar("requestor", { length: 255 }).notNull(),
+  country: varchar("country", { length: 255 }).notNull(),
+  recievedDate: date("recievedDate"),
+});

@@ -1,10 +1,15 @@
-import Link from "next/link";
+"use server"
+
 import { lusitana } from '~/app/ui/fonts';
 import Image from 'next/image';
 import {SignIn} from "~/app/ui/login/signin-button";
+import {auth} from "~/auth"
+import {redirect} from "next/navigation";
 
+export default async function HomePage() {
 
-export default function HomePage() {
+    const session = await auth();
+    if (session) return redirect("/dashboard");
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-White-500 p-4 md:h-52">

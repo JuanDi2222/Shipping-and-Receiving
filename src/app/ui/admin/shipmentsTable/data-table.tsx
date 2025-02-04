@@ -13,6 +13,8 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table"
 
+import {DatePickerWithRange} from "~/app/ui/admin/shipmentsTable/DateRangePicker"
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -45,7 +47,7 @@ export function ShipmentsTable<TData, TValue>({
   data: initialData,
 }: DataTableProps<TData, TValue>) {
   const [data, setData] = useState(initialData);
-  const [globalFilter, setGlobalFilter] = useState(""); // Global filter state
+  const [globalFilter, setGlobalFilter] = useState(""); 
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 
   const table = useReactTable({
@@ -53,9 +55,9 @@ export function ShipmentsTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onGlobalFilterChange: setGlobalFilter, // Set the global filter
+    onGlobalFilterChange: setGlobalFilter, 
     state: {
-      globalFilter, // Global filter state
+      globalFilter, 
     },
     getFilteredRowModel: getFilteredRowModel(),
     meta: {
@@ -77,14 +79,16 @@ export function ShipmentsTable<TData, TValue>({
 
   return (
     <div className="grid lg:grid-cols-2">
-      <div className="flex items-center py-4">
+      <div className="grid grid-cols-2 gap-4">
         <Input
           placeholder="Search"
-          value={globalFilter || ""} // Bind to global filter state
-          onChange={(event) => setGlobalFilter(event.target.value)} // Update global filter
+          value={globalFilter || ""} 
+          onChange={(event) => setGlobalFilter(event.target.value)} 
           className="max-w-sm"
         />
+        <DatePickerWithRange/>
       </div>
+      
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="ml-auto">

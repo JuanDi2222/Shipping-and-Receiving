@@ -9,11 +9,11 @@ export async function sendEmail(values: any) {
   const isPriorityOvernight = values.type === "Priority Overnight";
   const warningMessage = isPriorityOvernight
     ? `<div style="background-color: #ffcc00; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
-        <strong>⚠️ Approval Required:</strong> Please seek approval from the boss for Priority Overnight shipments.
+        <strong>⚠️ Approval Required:</strong> Please seek approval of a level 7 or 8 per SAVS for priority.
       </div>`
     : '';
 
-  const account = values?.account || "Phinia";  
+    const account = values?.account !== undefined ? values.account : "Phinia"; 
 
   const emailBody = `
     <!DOCTYPE html>
@@ -96,7 +96,7 @@ export async function sendEmail(values: any) {
     },
     body: JSON.stringify({
       message: {
-        subject: "Shipment Notification id: " + values.id,
+        subject: "Shipment Notification - Phinia MTC",
         body: {
           contentType: "HTML",
           content: emailBody, 

@@ -3,10 +3,12 @@
 import { db } from "~/server/db/index";
 import { shipmentNotice, shipment, user , sessions, accounts } from "~/server/db/schema";
 import { auth } from "~/auth";
-import { eq, and, isNull, isNotNull, desc, count, sql } from "drizzle-orm";
+import { eq, and, isNull, isNotNull, desc, count, sql, gte, lt } from "drizzle-orm";
 import { redirect } from 'next/navigation'
 import { env } from "~/env.js";
 import { unstable_cache } from "next/cache";
+import type { DateRange } from "react-day-picker";
+
 
 const fedexTokenCache = {
   token: "",
@@ -426,4 +428,20 @@ export async function getBarChart() {
 export async function getUserToken(id: any) {
   const [token] =  await db.select().from(accounts).where(eq(accounts.userId, id))
   return token?.access_token
+}
+
+export async function getDateShipments(dateRange: DateRange) {
+  if (!dateRange.from || !dateRange.to) {
+    throw new Error("Both from and to dates must be defined.");
+  }
+
+  const fromDate = new Date(dateRange.from);
+  const toDate = new Date(dateRange.to);
+
+  const shipments = await db
+    .select()
+    .from(shipment)
+    .where(and(gte(shipment.date, fromDate), lt(shipment.date, toDate)));
+
+  return shipments;
 }
