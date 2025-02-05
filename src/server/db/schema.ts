@@ -193,10 +193,10 @@ export const authenticators = pgTable(
   })
 )
 
-export const mports = pgTable("import", {
+export const port = pgTable("import", {
   id: integer("id").primaryKey(),
   date: timestamp("date").notNull().defaultNow(),
-  job: varchar("job", { length: 255 }),
+  job: integer("job"),
   carrier: carrierEnum().notNull().default("DHL"),
   tracking: varchar("tracking", { length: 255 }).notNull().default(""),
   supplier: varchar("supplier", { length: 255 }).notNull().default(""),
@@ -205,4 +205,5 @@ export const mports = pgTable("import", {
   requestor: varchar("requestor", { length: 255 }).notNull(),
   country: varchar("country", { length: 255 }).notNull(),
   recievedDate: date("recievedDate"),
+  requestorId: varchar("requestorId", { length: 255 }).notNull(),
 });

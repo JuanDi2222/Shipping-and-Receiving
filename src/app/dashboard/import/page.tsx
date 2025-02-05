@@ -1,21 +1,21 @@
 import { auth } from "~/auth";
 import { redirect } from "next/navigation";
-import {getFedexTracking} from "~/server/db/actions";
+import {getUserImports} from "~/server/db/actions";
+import { ImportUserTable } from "~/app/ui/import/data-table";
+import { columns, port} from "~/app/ui/import/columns";
 
 
 export default async function Page() {
   const session = await auth();
   if (!session) return redirect("/");  
+  const ports = await getUserImports(session);
 
- const data = await getFedexTracking("480258671-4");
- console.log(data);
- console.log(data.output)
- console.log(new Date(data?.output?.completeTrackResults?.[0]?.trackResults?.[0].standardTransitTimeWindow?.window?.ends))
 
   return ( 
     <div className="h-full w-full">
-      <p>{JSON.stringify(data)}</p>
-    
+     <ImportUserTable
+     columns={columns}
+     data={ports}/>
     </div>
   );
 }

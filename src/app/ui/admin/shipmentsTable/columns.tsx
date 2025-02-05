@@ -1,6 +1,6 @@
 'use client'
 
-import { ColumnDef } from "@tanstack/react-table"
+import type { ColumnDef } from "@tanstack/react-table"
 import Status from "~/app/ui/export/status";
 import { MoreHorizontal } from "lucide-react"
 import { Button } from "~/components/ui/button"

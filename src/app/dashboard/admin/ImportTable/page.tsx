@@ -1,20 +1,26 @@
 import { auth } from "~/auth";
-import { redirect } from "next/navigation";
-import { getAllUsers, getShipments } from "~/server/db/actions";
+import { getImports, getNames } from "~/server/db/actions";
 
-import { ShipmentsTable } from "~/app/ui/admin/shipmentsTable/data-table";
-import {columns, shipment} from "~/app/ui/admin/shipmentsTable/columns";
+import { ImportTable } from "~/app/ui/admin/ImportsTable/data-table";
+import {columns, port} from "~/app/ui/admin/ImportsTable/columns";
+
+import { ImportForm } from "~/app/ui/admin/ImportsTable/registerImport";
+import {redirect} from "next/navigation";
 
 export default async function Page() {
     const session = await auth();
-    const shipments = await getShipments();
+    const ports = await getImports();
+    const names = await getNames()
     if (!session) return redirect("/");
+    
+    
     return (
         <main>
         <div className="m-14 mt-16 grid gap-8 lg:grid-cols-1">
-            <ShipmentsTable
+            <ImportForm names={names} />
+            <ImportTable
                 columns={columns}
-                data={shipments}
+                data={ports}
             />
         </div>
     </main>

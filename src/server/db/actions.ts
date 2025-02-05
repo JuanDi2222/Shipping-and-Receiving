@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "~/server/db/index";
-import { shipmentNotice, shipment, user , sessions, accounts } from "~/server/db/schema";
+import { shipmentNotice, shipment, user , sessions, accounts, port } from "~/server/db/schema";
 import { auth } from "~/auth";
 import { eq, and, isNull, isNotNull, desc, count, sql, gte, lt } from "drizzle-orm";
 import { redirect } from 'next/navigation'
@@ -444,4 +444,33 @@ export async function getDateShipments(dateRange: DateRange) {
     .where(and(gte(shipment.date, fromDate), lt(shipment.date, toDate)));
 
   return shipments;
+}
+
+export async function deleteImport(id: number) {
+  await db.delete(port).where(eq(port.id, id));
+}
+
+export async function updateImport(values: any) {
+  const portValues = values;
+  const id = portValues.id
+  delete portValues.id
+  await db.update(port).set(portValues).where(eq(port.id, id));
+}
+
+export async function getImports() {
+  const ports = await db.select().from(port);
+  return ports;
+}
+
+export async function registerImport(values: any) {
+  await db.insert(port).values(values);
+}
+export async function getNames() {
+  const names = await db.select({name: user.name, userId: user.id}).from(user);
+  return names
+}
+
+export async function getUserImports(session: any) {
+  const ports = await db.select().from(port).where(eq(port.requestorId, session?.user?.id));
+  return ports;
 }
