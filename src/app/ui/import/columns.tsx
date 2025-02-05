@@ -110,21 +110,21 @@ export const columns: ColumnDef<port>[] = [
     {
         accessorKey: "country",
         header: "Country",
-        cell: TableCell,
+        
     },
     {
         accessorKey: "description",
         header: "Description",
-        cell: TableCell,
+        
     },
     {
         accessorKey: "bulks",
         header: "Bulks",
-        cell: TableCell,
+        
     },
     {
         accessorKey: "supplier",
         header: "Supplier",
-        cell: TableCell,
+        
     }, 
 ]
