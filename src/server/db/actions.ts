@@ -102,16 +102,40 @@ export async function createShipment(values: any) {
       totalPieces += items.quantity;
       totalCost += items.quantity * items.unitPrice;
     })
-
     ship.pieces = totalPieces;
     ship.cost = totalCost;
   }
-
   ship.goods = JSON.stringify(ship.items);
-
-
   await db.insert(shipment).values(ship);
 }
+
+export async function createShipmentPrueba(values: any) {
+
+  const ship = values;
+  ship.userId = "8b46ae0b-d27a-4196-a0ea-59135421a3c7";
+  const user = await getUsers(ship.userId);
+  ship.requestor = user[0]?.name;
+  ship.service = ship.type;
+  ship.description = ship.feedback
+  delete ship.feedback
+  
+
+  if (ship?.items && ship.items.length > 0) {
+    let totalPieces = 0;
+    let totalCost = 0;
+
+    ship.items.forEach((items: any) => {
+      totalPieces += items.quantity;
+      totalCost += items.quantity * items.unitPrice;
+    })
+    ship.pieces = totalPieces;
+    ship.cost = totalCost;
+  }
+  ship.goods = JSON.stringify(ship.items);
+  await db.insert(shipment).values(ship);
+}
+
+
 
 export async function getShipments() {
   const shipments = await db.select().from(shipment);
