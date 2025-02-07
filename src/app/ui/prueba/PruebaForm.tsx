@@ -360,7 +360,7 @@ export function ShipmentForm() {
         </div>
 
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          * I certify that all statements made and all information containes herein are true and correct and that I by submitting this form agree to it being used as evidence of responsibility
+          * I certify that all statements made and all information contained here is true and correct and that I by submitting this form agree to it being used as evidence of responsibility
         </p>
 
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">

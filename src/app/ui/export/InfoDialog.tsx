@@ -28,13 +28,13 @@ export function InfoDialog({ open, onClose, priority, hazardous }: UpdateDialogP
           <AlertDialogTitle>Shipment Created!</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogDescription>
-          Your shipment has been created successfully. Remember for that internationa shipments the material should be delivered before 9 AM to the shipping team.
+          Your shipment has been created successfully. Remember for that international shipments the material should be delivered before 9 AM to the shipping team.
         </AlertDialogDescription>
         <AlertDialogDescription>
         {priority && "The shipment is a priority shipment. For this shipment to be fulfilled the shipping team needs approval of a level 7 or 8 per SAVS ."}
         </AlertDialogDescription>
         <AlertDialogDescription>
-        {hazardous && "The shipment is hazardous. For this shipment to be fulfilled the shipping team needs ."}
+        {hazardous && "The shipment is hazardous. For this shipment to be fulfilled the shipping team needs the Safety Data Sheet."}
         </AlertDialogDescription>
         <AlertDialogFooter>
             <Button variant="outline" onClick={onClose}>
