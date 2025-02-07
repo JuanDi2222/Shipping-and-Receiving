@@ -80,13 +80,18 @@ const formSchema = z.object({
 
 export function ShipmentForm() {
   const countries = getData();
+
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const handleChange = (value: string) => {
     setSelectedOption(value);
   };
 
+  const [ConutryOfOption, setSelectedCountry] = useState<string | null>(null);
 
+  const handleCountryChange = (value: string) => {
+    setSelectedCountry(value);
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -554,7 +559,7 @@ export function ShipmentForm() {
                 <Select
                   onValueChange={(value) => {
                     field.onChange(value);
-                    handleChange(value);
+                    handleCountryChange(value);
                   }}
                   defaultValue={field.value}
                 >
@@ -696,7 +701,7 @@ export function ShipmentForm() {
             id="checkbox"
           />
 
-<FormField
+          <FormField
           control={form.control}
           name="feedback"
           render={({ field }) => (
