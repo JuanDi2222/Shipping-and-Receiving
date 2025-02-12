@@ -150,7 +150,7 @@ export function ShipmentForm() {
     } catch (error) {
       console.error("Error creating shipment", error);
       setErrorMessage(
-        "There was an error submitting this form. Please check your input and try again."
+        "There was an error submitting the form, please send a screenshot of the page to Diego on Teams."
       );
     }
     setHazardous(isChecked || false); 
@@ -727,6 +727,12 @@ export function ShipmentForm() {
           )}
         />
         </div>
+
+        {errorMessage && (
+            <div className="text-red-600 text text-8xl">
+              {errorMessage}
+            </div>
+          )}
         <Button type="submit">Submit</Button>
       </form>
     </Form>
