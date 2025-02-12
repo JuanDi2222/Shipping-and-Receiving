@@ -143,7 +143,14 @@ export function ShipmentForm() {
   const router = useRouter();
   
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createShipmentPrueba (values);
+
+    try{
+      createShipmentPrueba (values);
+    }catch (error) {
+      console.error("Error creating shipment", error);
+      alert("There was an error submitting this form, please send a screenshot of the entered values to Diego");
+    }
+    
     
     
     setHazardous(isChecked || false); 
@@ -181,7 +188,7 @@ export function ShipmentForm() {
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
             name="address"
