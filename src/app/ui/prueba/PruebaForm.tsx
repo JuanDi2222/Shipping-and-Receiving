@@ -82,6 +82,7 @@ export function ShipmentForm() {
   const countries = getData();
 
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleChange = (value: string) => {
     setSelectedOption(value);
@@ -142,17 +143,16 @@ export function ShipmentForm() {
 
   const router = useRouter();
   
-  function onSubmit(values: z.infer<typeof formSchema>) {
-
-    try{
-      createShipmentPrueba (values);
-    }catch (error) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await createShipmentPrueba(values);
+      setErrorMessage(null); // Clear any previous error message
+    } catch (error) {
       console.error("Error creating shipment", error);
-      alert("There was an error submitting this form, please send a screenshot of the entered values to Diego");
+      setErrorMessage(
+        "There was an error submitting this form. Please check your input and try again."
+      );
     }
-    
-    
-    
     setHazardous(isChecked || false); 
     setPriority(values.type === "Priority Overnight");
     setDialogOpen(true);
