@@ -6,10 +6,7 @@ import {DonutChartHome} from "~/app/ui/Home/DonutChart";
 import {auth} from "~/auth"
 import {redirect} from "next/navigation";
 import { getDonutShart, getAreaShart, getBarChart, getUsers } from "~/server/db/actions";
-import Layout from "./layout";
-
-
-
+import Layout from "~/app/dashboard/layout";
 
 
 export default async function Page() {
@@ -32,6 +29,8 @@ export default async function Page() {
   const barData = await getBarChart();
 
   return (
+    <Layout isProfileIncomplete={isProfileIncomplete}>
+      
     <main>
       <div className="grid lg:grid-cols-2 gap-8 mt-16 m-28" >
         <DonutChartHome donutData={donutData}></DonutChartHome>
@@ -39,5 +38,6 @@ export default async function Page() {
         <BarChartHome barData={barData}></BarChartHome>
       </div>
     </main>
+    </Layout>
   );
 }
