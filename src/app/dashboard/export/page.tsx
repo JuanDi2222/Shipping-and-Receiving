@@ -12,6 +12,7 @@ import { shipment, columns } from "~/app/ui/export/createShipment/columns";
 export default async function Page() {
   const session = await auth();
   if (!session) return redirect("/");
+  
   const data = await getUserShipments(session);
   const mails = await getUserMails(session);
 
