@@ -6,11 +6,11 @@ import { usePathname } from "next/navigation";
 import { SignOut } from "~/app/ui/login/signout-button";
 import Image from "next/image";
 
-interface TopNavProps {
-    isProfileIncomplete: boolean;
-}
 
-export default function TopNav({ isProfileIncomplete }: TopNavProps) {
+
+
+
+export default function TopNav() {
     const pathname = usePathname();
 
     return (
@@ -66,7 +66,7 @@ export default function TopNav({ isProfileIncomplete }: TopNavProps) {
                     className={clsx(
                         "text-black dark:text-black border-b-2 mx-1.5 sm:mx-6",
                         { "border-red-500": pathname === "/dashboard/profile" },
-                        { "border-yellow-500 font-bold": isProfileIncomplete } // Highlight if profile is incomplete
+                        { "border-yellow-500 font-bold": false } 
                     )}
                 >
                     <span>Profile</span>
