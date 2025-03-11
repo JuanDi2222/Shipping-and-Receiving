@@ -3,12 +3,12 @@
 import * as React from "react"
 
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
-  VisibilityState,
+  type VisibilityState,
   ColumnFiltersState,
   getFilteredRowModel,
 } from "@tanstack/react-table"

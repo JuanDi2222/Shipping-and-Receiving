@@ -88,7 +88,11 @@ export function ShipmentForm() {
     setSelectedOption(value);
   };
 
+  const [ConutryOfOption, setSelectedCountry] = useState<string | null>(null);
 
+  const handleCountryChange = (value: string) => {
+    setSelectedCountry(value);
+  };
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -547,19 +551,37 @@ export function ShipmentForm() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name={`items.${index}.countryOfOrigin`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country of Origin</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Country of Origin" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+            control={form.control}
+            name={`items.${index}.countryOfOrigin`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Country of Origin</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    handleCountryChange(value);
+                  }}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a country" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {countries.map((country) => (
+                      <SelectItem key={country.code} value={country.name}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
               <FormField
                 control={form.control}

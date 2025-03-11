@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import { deleteShipment, updateShipment } from "~/server/db/actions";
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils"

@@ -13,44 +13,54 @@ import * as XLSX from "xlsx";
 import { db } from "~/server/db";
 import { getDateShipments } from "~/server/db/actions";
 
+// Define the props for the DatePickerWithRange component
 interface DatePickerWithRangeProps {
   className?: string;
-  
 }
 
+// DatePickerWithRange component
 export function DatePickerWithRange({
   className,
 }: DatePickerWithRangeProps) {
+  // State to manage the selected date range
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(Date.now()),
     to: addDays(new Date(Date.now()), 20),
   });
 
+  // Function to handle the submission of the date range
   const handleDateRangeSubmit = async (dateRange: DateRange) => {
-    
     try {
+      // Fetch shipments data for the selected date range
       const response = await getDateShipments(dateRange);
 
+      // Create a new workbook and worksheet
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(response);
 
+      // Append the worksheet to the workbook
       XLSX.utils.book_append_sheet(wb, ws, "Shipments");
 
+      // Convert the workbook to binary and create a Blob
       const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
       const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" });
+
+      // Save the Blob as an Excel file
       saveAs(blob, "shipments_report.xlsx");
     } catch (error) {
       console.error("Error generating report:", error);
-    } 
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    if (date) {
-      handleDateRangeSubmit(date); // Call the new function to handle submission
     }
   };
 
+  // Function to handle form submission
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (date) {
+      handleDateRangeSubmit(date);
+    }
+  };
+
+  // Helper function to convert a string to an ArrayBuffer
   function s2ab(s: string) {
     const buf = new ArrayBuffer(s.length);
     const view = new Uint8Array(buf);

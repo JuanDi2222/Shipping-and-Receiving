@@ -5,7 +5,8 @@ import {BarChartHome} from "~/app/ui/Home/BarChart";
 import {DonutChartHome} from "~/app/ui/Home/DonutChart";
 import {auth} from "~/auth"
 import {redirect} from "next/navigation";
-import { getDonutShart, getAreaShart, getBarChart } from "~/server/db/actions";
+import { getDonutShart, getAreaShart, getBarChart, getUsers } from "~/server/db/actions";
+import Layout from "./layout";
 
 
 
@@ -14,7 +15,18 @@ import { getDonutShart, getAreaShart, getBarChart } from "~/server/db/actions";
 export default async function Page() {
   
   const session = await auth();
-  if (!session) return redirect("/");
+  if (!session) {
+    redirect("/");
+    return;
+  }
+  if (!session.user) {
+    redirect("/");
+    return;
+  }
+  const users = await getUsers(session.user.id);
+  const isProfileIncomplete = !users[0]?.phone || !users[0]?.department
+  
+  
   const donutData = await getDonutShart();
   const areaData = await getAreaShart();
   const barData = await getBarChart();
@@ -25,9 +37,6 @@ export default async function Page() {
         <DonutChartHome donutData={donutData}></DonutChartHome>
         <AreaChartHome areaData={areaData}></AreaChartHome>
         <BarChartHome barData={barData}></BarChartHome>
-
-  
-
       </div>
     </main>
   );

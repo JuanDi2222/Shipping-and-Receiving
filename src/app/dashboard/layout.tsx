@@ -1,11 +1,11 @@
 import TopNav from '~/app/ui/dashboard/Topnav';
-import { Toaster } from "~/components/ui/sonner"
+import { Toaster } from "~/components/ui/sonner";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children, isProfileIncomplete }: { children: React.ReactNode; isProfileIncomplete: boolean }) {
   return (
-    <div >
+    <div>
       <div>
-        <TopNav />
+        <TopNav isProfileIncomplete={isProfileIncomplete} />
       </div>
       <div>{children}</div>
       <Toaster />
